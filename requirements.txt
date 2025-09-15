@@ -1,2 +1,6 @@
 flask
 gunicorn
+PyPDF2
+weasyprint
+werkzeug
+reportlab
