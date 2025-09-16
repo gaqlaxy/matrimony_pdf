@@ -13,37 +13,37 @@ app.config["UPLOAD_FOLDER"] = "uploads"
 # Field positions (POINTS)
 # -------------------------
 FIELD_POSITIONS = {
-    "register_number":   (110, 1050),
-    "introduced_by":     (35, 1050),
-    "inam":              (80, 1020),
-    "name":              (80, 990),
-    "birth_place":       (110, 950),
-    "dob":               (120, 900),
-    "birth_time":        (350, 900),
+    "register_number":   (110, 1065),
+    "introduced_by":     (350, 1065),
+    "inam":              (80, 1030),
+    "name":              (80, 1000),
+    "birth_place":       (110, 955),
+    "dob":               (120, 915),
+    "birth_time":        (350, 915),
 
-    "star":              (110, 850),
-    "raasi_text":        (340, 850),
-    "height":            (90, 800),
-    "colour":            (210, 800),
+    "star":              (110, 868),
+    "raasi_text":        (340, 868),
+    "height":            (90, 826),
+    "colour":            (210, 826),
 
-    "laknam":            (380, 800),
-    "education":         (80, 780),
-    "work":              (100, 750),
-    "monthly_income":    (150, 650),
+    "laknam":            (380, 826),
+    "education":         (80, 790),
+    "work":              (100, 758),
+    "monthly_income":    (150, 659),
 
-    "birth_order":       (400, 650),
-    "elder_brother":     (100, 600),
-    "elder_sister":      (230, 600),
-    "younger_brother":   (330, 600),
-    "younger_sister":    (430, 600),
+    "birth_order":       (400, 659),
+    "elder_brother":     (100, 617),
+    "elder_sister":      (230, 617),
+    "younger_brother":   (330, 617),
+    "younger_sister":    (430, 617),
 
-    "father_name":       (120, 900),
-    "father_occupation": (350, 900),
-    "mother_name":       (600, 900),
-    "mother_occupation": (850, 900),
+    "father_name":       (140, 582),
+    "father_occupation": (160, 550),
+    "mother_name":       (130, 514),
+    "mother_occupation": (140, 480),
 
-    "expectation":       (120, 850),
-    "house_address":     (120, 800),
+    "expectation":       (140, 440),
+    "house_address":     (400, 401),
 
     # keep gender if you want it printed somewhere
     "gender":            (120, 1175),
@@ -113,7 +113,7 @@ def generate_pdf():
     width: {width}pt;
     height: {height}pt;
     font-family: 'Latha', sans-serif;
-    font-size: 12pt;
+    font-size: 14pt;
   }}
   .field {{
     position: absolute;
