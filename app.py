@@ -89,7 +89,7 @@ NAVAMSA_POSITIONS = {
 
 
 # Photo box in points (x1, y1, x2, y2)
-PHOTO_BOX = (460, 410, 900, 1080)
+PHOTO_BOX = (469, 410, 920, 1041.5)
 
 
 @app.route('/')
