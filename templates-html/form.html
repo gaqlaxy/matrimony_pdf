@@ -92,7 +92,9 @@
 
         <label>Laknam: <input type="text" name="laknam"></label><br>
         <label>Education: <input type="text" name="education"></label><br>
-        <label>Work: <input type="text" name="work"></label><br>
+        <!-- <label>Work: <input type="text" name="work"></label><br> -->
+        <label>Work: <textarea name="work" rows="3"></textarea></label><br>
+
         <label>Monthly Income: <input type="text" name="monthly_income"></label><br>
 
         <label>Birth Order: <input type="text" name="birth_order"></label><br>
@@ -108,6 +110,7 @@
 
         <label>Expectation: <textarea name="expectation"></textarea></label><br>
         <label>Address: <textarea name="house_address"></textarea></label><br>
+        <label>Additional information: <textarea name="addition_info"></textarea></label><br>
 
         <label>Gender:
             <select name="gender">
@@ -127,7 +130,8 @@
         <h2>Navamsa (12 Boxes)</h2>
         <div class="grid">
             {% for i in range(1,13) %}
-            <input type="text" name="navamsa_{{i}}" placeholder="{{i}}">
+            <!-- <input type="text" name="navamsa_{{i}}" placeholder="{{i}}"> -->
+            <textarea name="navamsa_{{i}}" placeholder="{{i}}"></textarea>
             {% endfor %}
         </div>
 

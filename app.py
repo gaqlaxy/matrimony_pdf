@@ -44,6 +44,7 @@ FIELD_POSITIONS = {
 
     "expectation":       (140, 440),
     "house_address":     (400, 401),
+    "addition_info":     (480, 1070),
 
     # keep gender if you want it printed somewhere
     "gender":            (120, 1175),
@@ -58,33 +59,33 @@ FIELD_POSITIONS = {
 # Raasi & Navamsa positions
 # -------------------------
 RAASI_POSITIONS = {
-    "raasi_1":  (40, 350),
-    "raasi_2":  (120, 350),
-    "raasi_3":  (200, 350),
-    "raasi_4":  (280, 350),
-    "raasi_5":  (280, 275),
-    "raasi_6":  (280, 200),
-    "raasi_7":  (280, 130),
-    "raasi_8":  (200, 130),
-    "raasi_9":  (120, 130),
-    "raasi_10": (40, 130),
-    "raasi_11": (40, 270),
-    "raasi_12": (40, 200),
+    "raasi_1":  (20, 350),
+    "raasi_2":  (90, 350),
+    "raasi_3":  (180, 350),
+    "raasi_4":  (260, 350),
+    "raasi_5":  (260, 275),
+    "raasi_6":  (260, 200),
+    "raasi_7":  (260, 130),
+    "raasi_8":  (180, 130),
+    "raasi_9":  (100, 130),
+    "raasi_10": (20, 130),
+    "raasi_11": (20, 270),
+    "raasi_12": (20, 200),
 }
 
 NAVAMSA_POSITIONS = {
-    "navamsa_1":  (380, 350),
-    "navamsa_2":  (470, 350),
-    "navamsa_3":  (540, 350),
-    "navamsa_4":  (620, 350),
-    "navamsa_5":  (620, 275),
-    "navamsa_6":  (620, 200),
-    "navamsa_7":  (620, 130),
-    "navamsa_8":  (540, 130),
-    "navamsa_9":  (470, 130),
-    "navamsa_10": (380, 130),
-    "navamsa_11": (380, 270),
-    "navamsa_12": (380, 200),
+    "navamsa_1":  (360, 350),
+    "navamsa_2":  (435, 350),
+    "navamsa_3":  (510, 350),
+    "navamsa_4":  (590, 350),
+    "navamsa_5":  (590, 275),
+    "navamsa_6":  (590, 200),
+    "navamsa_7":  (590, 130),
+    "navamsa_8":  (435, 130),
+    "navamsa_9":  (510, 130),
+    "navamsa_10": (360, 130),
+    "navamsa_11": (360, 270),
+    "navamsa_12": (360, 200),
 }
 
 
@@ -159,7 +160,9 @@ def generate_pdf():
   }}
   .photo {{
     position: absolute;
-    object-fit: cover;
+    
+    object-fit: contain;
+background-color: white;
   }}
 </style>
 </head>
@@ -173,7 +176,7 @@ def generate_pdf():
             left = x
             top = height - y
             # use pt units so positions match PDF points exactly
-            html_content += f"<div class='field' style='left:{left}pt; top:{top}pt; font-size:12pt;'>{value}</div>\n"
+            html_content += f"<div class='field' style='left:{left}pt; top:{top}pt; font-size:14pt;'>{value}</div>\n"
 
     # Add raasi & navamsa
     for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
@@ -182,7 +185,7 @@ def generate_pdf():
             if value:
                 left = x
                 top = height - y
-                html_content += f"<div class='field' style='left:{left}pt; top:{top}pt; font-size:10pt; text-align:center;'>{value}</div>\n"
+                html_content += f"<div class='field' style='left:{left}pt; top:{top}pt; font-size:10pt; text-align:center; width:60pt; white-space:pre-wrap;'>{value}</div>\n"
 
     # Photo (use pt units for width/height)
     if photo_data:
@@ -274,236 +277,3 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 
-# import io, base64
-# from flask import Flask, render_template, request, send_file
-# from PyPDF2 import PdfReader, PdfWriter
-# from weasyprint import HTML
-# from werkzeug.utils import secure_filename
-# from reportlab.pdfgen import canvas
-
-# app = Flask(__name__, template_folder="templates-html")
-# app.config["UPLOAD_FOLDER"] = "uploads"
-
-# # ✅ Core field positions
-# FIELD_POSITIONS = {
-#     "register_number": (120, 1100),
-#     "introduced_by": (350, 1100),
-#     "inam": (580, 1100),
-#     "name": (120, 1050),
-#     "birth_place": (350, 1050),
-#     "dob": (580, 1050),
-#     "birth_time": (120, 1000),
-#     "star": (350, 1000),
-#     "raasi_text": (580, 1000),
-#     "height": (120, 950),
-#     "colour": (350, 950),
-#     "laknam": (580, 950),
-#     "education": (120, 900),
-#     "work": (350, 900),
-#     "monthly_income": (580, 900),
-#     "birth_order": (120, 850),
-#     "elder_brother": (350, 850),
-#     "elder_sister": (580, 850),
-#     "younger_brother": (120, 800),
-#     "younger_sister": (350, 800),
-#     "father_name": (120, 750),
-#     "father_occupation": (350, 750),
-#     "mother_name": (120, 700),
-#     "mother_occupation": (350, 700),
-#     "expectation": (120, 650),
-#     "house_address": (120, 600),
-#     # "gender": (580, 600),
-# }
-
-# # ✅ Manual Raasi positions (12 boxes)
-# RAASI_POSITIONS = {
-#     "raasi_1": (120, 500),
-#     "raasi_2": (200, 500),
-#     "raasi_3": (280, 500),
-#     "raasi_4": (360, 500),
-#     "raasi_5": (120, 440),
-#     "raasi_6": (200, 440),
-#     "raasi_7": (280, 440),
-#     "raasi_8": (360, 440),
-#     "raasi_9": (120, 380),
-#     "raasi_10": (200, 380),
-#     "raasi_11": (280, 380),
-#     "raasi_12": (360, 380),
-# }
-
-# # ✅ Manual Navamsa positions (12 boxes)
-# NAVAMSA_POSITIONS = {
-#     "navamsa_1": (500, 500),
-#     "navamsa_2": (580, 500),
-#     "navamsa_3": (660, 500),
-#     "navamsa_4": (740, 500),
-#     "navamsa_5": (500, 440),
-#     "navamsa_6": (580, 440),
-#     "navamsa_7": (660, 440),
-#     "navamsa_8": (740, 440),
-#     "navamsa_9": (500, 380),
-#     "navamsa_10": (580, 380),
-#     "navamsa_11": (660, 380),
-#     "navamsa_12": (740, 380),
-# }
-
-# # ✅ Photo box
-# PHOTO_BOX = (460, 410, 900, 1080)  # (x1, y1, x2, y2)
-
-
-# @app.route('/')
-# def form():
-#     return render_template('form.html')
-
-
-# @app.route('/generate', methods=['POST'])
-# def generate_pdf():
-#     form_data = request.form.to_dict()
-
-#     # Handle photo upload
-#     photo_data = None
-#     if "photo" in request.files and request.files["photo"].filename != "":
-#         photo_file = request.files["photo"]
-#         filename = secure_filename(photo_file.filename)
-#         photo_bytes = photo_file.read()
-#         b64_str = base64.b64encode(photo_bytes).decode("utf-8")
-#         photo_data = f"data:image/png;base64,{b64_str}"
-
-#     # 1️⃣ Load template PDF
-#     template_path = "templates/matrimony_template.pdf"
-#     template_pdf = PdfReader(open(template_path, "rb"))
-#     first_page = template_pdf.pages[0]
-#     width, height = float(first_page.mediabox.width), float(first_page.mediabox.height)
-
-#     # 2️⃣ Build overlay HTML
-#     selected_gender = form_data.get("gender", "").lower()
-#     color = "black"
-#     if selected_gender == "male":
-#         color = "brown"
-#     elif selected_gender == "female":
-#         color = "green"
-
-#     html_content = f"""
-#     <html>
-#     <head>
-#         <style>
-#             @page {{ size: {width}px {height}px; margin: 0; }}
-#             body {{ margin: 0; font-family: 'Latha', sans-serif; }}
-#             .field {{
-#                 position: absolute;
-#                 font-size: 14px;
-#                 color: {color};
-#             }}
-#             .photo {{
-#                 position: absolute;
-#                 left: {PHOTO_BOX[0]}px;
-#                 top: {height - PHOTO_BOX[3]}px;
-#                 width: {PHOTO_BOX[2]-PHOTO_BOX[0]}px;
-#                 height: {PHOTO_BOX[3]-PHOTO_BOX[1]}px;
-#                 object-fit: cover;
-#             }}
-#         </style>
-#     </head>
-#     <body>
-#     """
-
-#     # 3️⃣ Normal fields
-#     for field, (x, y) in FIELD_POSITIONS.items():
-#         value = form_data.get(field, "")
-#         if value:
-#             html_content += f"<div class='field' style='left:{x}px;top:{height-y}px;'>{value}</div>"
-
-#     # 4️⃣ Raasi + Navamsa
-#     for field, (x, y) in {**RAASI_POSITIONS, **NAVAMSA_POSITIONS}.items():
-#         value = form_data.get(field, "")
-#         if value:
-#             html_content += f"<div class='field' style='left:{x}px;top:{height-y}px;'>{value}</div>"
-
-#     # 5️⃣ Photo
-#     if photo_data:
-#         html_content += f"<img src='{photo_data}' class='photo'/>"
-
-#     html_content += "</body></html>"
-
-#     # 6️⃣ Render overlay
-#     overlay_stream = io.BytesIO()
-#     HTML(string=html_content).write_pdf(overlay_stream)
-#     overlay_stream.seek(0)
-#     overlay_pdf = PdfReader(overlay_stream)
-
-#     # 7️⃣ Merge
-#     writer = PdfWriter()
-#     page0 = template_pdf.pages[0]
-#     page0.merge_page(overlay_pdf.pages[0])
-#     writer.add_page(page0)
-
-#     for p in template_pdf.pages[1:]:
-#         writer.add_page(p)
-
-#     # 8️⃣ Return
-#     out_stream = io.BytesIO()
-#     writer.write(out_stream)
-#     out_stream.seek(0)
-
-#     return send_file(out_stream,
-#                      as_attachment=True,
-#                      download_name="matrimony_filled.pdf",
-#                      mimetype="application/pdf")
-
-
-# # ✅ Debug grid with field markers
-# @app.route('/debug_grid')
-# def debug_grid():
-#     template_path = "templates/matrimony_template.pdf"
-#     template_pdf = PdfReader(open(template_path, "rb"))
-#     first_page = template_pdf.pages[0]
-#     width, height = float(first_page.mediabox.width), float(first_page.mediabox.height)
-
-#     packet = io.BytesIO()
-#     can = canvas.Canvas(packet, pagesize=(width, height))
-
-#     step = 50  # grid step size
-#     can.setStrokeColorRGB(0.8, 0.8, 0.8)
-#     can.setFont("Helvetica", 6)
-
-#     # Grid
-#     for x in range(0, int(width), step):
-#         can.line(x, 0, x, height)
-#         can.drawString(x + 2, height - 10, str(x))
-
-#     for y in range(0, int(height), step):
-#         can.line(0, y, width, y)
-#         can.drawString(2, y + 2, str(y))
-
-#     # Field markers
-#     all_fields = {**FIELD_POSITIONS, **RAASI_POSITIONS, **NAVAMSA_POSITIONS}
-#     can.setFillColorRGB(1, 0, 0)  # red markers
-#     for fid, (x, y) in all_fields.items():
-#         can.circle(x, y, 3, fill=1)
-#         can.drawString(x + 5, y + 5, fid)
-
-#     can.save()
-#     packet.seek(0)
-
-#     overlay_pdf = PdfReader(packet)
-#     writer = PdfWriter()
-
-#     page0 = template_pdf.pages[0]
-#     page0.merge_page(overlay_pdf.pages[0])
-#     writer.add_page(page0)
-
-#     for p in template_pdf.pages[1:]:
-#         writer.add_page(p)
-
-#     out_stream = io.BytesIO()
-#     writer.write(out_stream)
-#     out_stream.seek(0)
-
-#     return send_file(out_stream,
-#                      as_attachment=True,
-#                      download_name="debug_grid.pdf",
-#                      mimetype="application/pdf")
-
-
-# if __name__ == "__main__":
-#     app.run(debug=True)
