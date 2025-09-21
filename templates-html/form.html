@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="ta">
 
 <head>
@@ -92,7 +92,7 @@
 
         <label>Laknam: <input type="text" name="laknam"></label><br>
         <label>Education: <input type="text" name="education"></label><br>
-        <!-- <label>Work: <input type="text" name="work"></label><br> -->
+        
         <label>Work: <textarea name="work" rows="3"></textarea></label><br>
 
         <label>Monthly Income: <input type="text" name="monthly_income"></label><br>
@@ -130,7 +130,7 @@
         <h2>Navamsa (12 Boxes)</h2>
         <div class="grid">
             {% for i in range(1,13) %}
-            <!-- <input type="text" name="navamsa_{{i}}" placeholder="{{i}}"> -->
+            
             <textarea name="navamsa_{{i}}" placeholder="{{i}}"></textarea>
             {% endfor %}
         </div>
@@ -142,6 +142,254 @@
 
         <button type="submit">Generate PDF</button>
     </form>
+</body>
+
+</html> -->
+
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Matrimony Form</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .form-container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-top: 40px;
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: #007bff;
+            border-left: 4px solid #007bff;
+            padding-left: 10px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #444;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+            outline: none;
+        }
+
+        .row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .row>div {
+            flex: 1;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .grid input,
+        .grid textarea {
+            text-align: center;
+            padding: 8px;
+            font-size: 13px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <h1>Matrimony Form</h1>
+        <form action="/generate" method="post" enctype="multipart/form-data">
+
+            <h2>Basic Details</h2>
+            <div class="row">
+                <div>
+                    <label>Register Number</label>
+                    <input type="text" name="register_number">
+                </div>
+                <div>
+                    <label>Introduced By</label>
+                    <input type="text" name="introduced_by">
+                </div>
+            </div>
+            <div class="row">
+                <div>
+                    <label>Inam</label>
+                    <input type="text" name="inam">
+                </div>
+                <div>
+                    <label>Name</label>
+                    <input type="text" name="name">
+                </div>
+            </div>
+
+            <label>Birth Place</label>
+            <input type="text" name="birth_place">
+
+            <div class="row">
+                <div>
+                    <label>Date of Birth</label>
+                    <input type="text" name="dob">
+                </div>
+                <div>
+                    <label>Birth Time</label>
+                    <input type="text" name="birth_time">
+                </div>
+            </div>
+
+            <div class="row">
+                <div>
+                    <label>Star</label>
+                    <input type="text" name="star">
+                </div>
+                <div>
+                    <label>Raasi</label>
+                    <input type="text" name="raasi_text">
+                </div>
+            </div>
+
+            <div class="row">
+                <div>
+                    <label>Height</label>
+                    <input type="text" name="height">
+                </div>
+                <div>
+                    <label>Colour</label>
+                    <input type="text" name="colour">
+                </div>
+            </div>
+
+            <label>Laknam</label>
+            <input type="text" name="laknam">
+
+            <label>Education</label>
+            <input type="text" name="education">
+
+            <label>Work</label>
+            <textarea name="work" rows="3"></textarea>
+
+            <label>Monthly Income</label>
+            <input type="text" name="monthly_income">
+
+            <h2>Family Details</h2>
+            <div class="row">
+                <div><label>Birth Order</label><input type="text" name="birth_order"></div>
+                <div><label>Elder Brother</label><input type="text" name="elder_brother"></div>
+                <div><label>Elder Sister</label><input type="text" name="elder_sister"></div>
+            </div>
+            <div class="row">
+                <div><label>Younger Brother</label><input type="text" name="younger_brother"></div>
+                <div><label>Younger Sister</label><input type="text" name="younger_sister"></div>
+            </div>
+
+            <label>Father Name</label>
+            <input type="text" name="father_name">
+            <label>Father Occupation</label>
+            <input type="text" name="father_occupation">
+
+            <label>Mother Name</label>
+            <input type="text" name="mother_name">
+            <label>Mother Occupation</label>
+            <input type="text" name="mother_occupation">
+
+            <label>Expectation</label>
+            <textarea name="expectation"></textarea>
+
+            <label>Address</label>
+            <textarea name="house_address"></textarea>
+
+            <label>Additional Information</label>
+            <textarea name="addition_info"></textarea>
+
+            <label>Gender</label>
+            <select name="gender">
+                <option value="">-- Select Gender --</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+
+            <h2>Raasi (12 Boxes)</h2>
+            <div class="grid">
+                {% for i in range(1,13) %}
+                <textarea name="raasi_{{i}}" placeholder="{{i}}" rows="1"></textarea>
+                {% endfor %}
+            </div>
+
+            <h2>Navamsa (12 Boxes)</h2>
+            <div class="grid">
+                {% for i in range(1,13) %}
+                <textarea name="navamsa_{{i}}" placeholder="{{i}}"></textarea>
+                {% endfor %}
+            </div>
+
+            <h2>Photo</h2>
+            <label>Upload Photo</label>
+            <input type="file" name="photo" accept="image/*">
+
+            <button type="submit">Generate PDF</button>
+        </form>
+    </div>
 </body>
 
 </html>
