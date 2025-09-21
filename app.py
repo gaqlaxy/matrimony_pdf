@@ -124,9 +124,12 @@ def generate_pdf():
     # Decide global color based on gender
     selected_gender = form_data.get("gender", "").lower()
     if selected_gender == "male":
-        color = "#8B4513"  # brown
+        # color = "#8B4513"  # brown
+        color = "rgb(168, 0, 0)"
     elif selected_gender == "female":
-        color = "#228B22"  # green
+        # color = "#228B22"  # green
+        color = "rgb(0, 170, 0)"
+
     else:
         color = "#000000"  # black
 
