@@ -146,7 +146,7 @@
 
 </html> -->
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="ta">
 
 <head>
@@ -390,6 +390,346 @@
             <button type="submit">Generate PDF</button>
         </form>
     </div>
+</body>
+
+</html> -->
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Matrimony Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #444;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        hr {
+            margin: 30px 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid textarea {
+            height: 40px;
+            min-height: 40px;
+            max-height: 60px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <h2>📂 Upload Existing PDF</h2>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="pdf">Select PDF:</label>
+                <input type="file" name="pdf" id="pdf" accept="application/pdf" required>
+            </div>
+            <button type="submit">Load PDF</button>
+        </form>
+
+        <hr>
+
+        <h2>📝 Fill Matrimony Form</h2>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="register_number">Register Number</label>
+                <input type="text" name="register_number" id="register_number"
+                    value="{{ form_data.get('register_number','') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="introduced_by">Introduced By</label>
+                <input type="text" name="introduced_by" id="introduced_by"
+                    value="{{ form_data.get('introduced_by','') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="inam">Inam</label>
+                <input type="text" name="inam" id="inam" value="{{ form_data.get('inam','') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name" value="{{ form_data.get('name','') }}">
+            </div>
+
+
+
+            <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="text" name="dob" id="dob" placeholder="DD/MM/YYYY" value="{{ form_data.get('dob','') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="birth_place">Birth Place</label>
+                <input type="text" name="birth_place" id="birth_place" value="{{ form_data.get('birth_place','') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="birth_time">Birth Time</label>
+                <input type="text" name="birth_time" id="birth_time" value="{{ form_data.get('birth_time','') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="star">Star</label>
+                <input type="text" name="star" id="star" value="{{ form_data.get('star','') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="raasi_text">Raasi Text</label>
+                <input type="text" name="raasi_text" id="raasi_text" value="{{ form_data.get('raasi_text','') }}">
+            </div>
+
+            <!-- height -->
+
+            <div class="form-group">
+                <label for="height">Height</label>
+                <input type="text" name="height" id="height" value="{{ form_data.get('height','') }}">
+            </div>
+
+            <!-- colour  -->
+
+            <div class="form-group">
+                <label for="colour">Colour</label>
+                <input type="text" name="colour" id="colour" value="{{ form_data.get('colour','') }}">
+            </div>
+
+            <!-- laknam  -->
+
+            <div class="form-group">
+                <label for="laknam">Laknam</label>
+                <input type="text" name="laknam" id="laknam" value="{{ form_data.get('laknam','') }}">
+            </div>
+
+            <!-- education  -->
+
+            <div class="form-group">
+                <label for="education">Education</label>
+                <input type="text" name="education" id="education" value="{{ form_data.get('education','') }}">
+            </div>
+
+            <!-- work  -->
+
+            <div class="form-group">
+                <label for="work">Work</label>
+                <input type="text" name="work" id="work" value="{{ form_data.get('work','') }}">
+            </div>
+
+            <!-- monthly_income  -->
+
+            <div class="form-group">
+                <label for="monthly_income">Monthly Income</label>
+                <input type="text" name="monthly_income" id="monthly_income"
+                    value="{{ form_data.get('monthly_income','') }}">
+            </div>
+
+            <!-- birth_order  -->
+
+            <div class="form-group">
+                <label for="birth_order">Birth Order</label>
+                <input type="text" name="birth_order" id="birth_order" value="{{ form_data.get('birth_order','') }}">
+            </div>
+
+            <!-- elder_brother  -->
+
+            <div class="form-group">
+                <label for="elder_brother">Elder Brother</label>
+                <input type="text" name="elder_brother" id="elder_brother"
+                    value="{{ form_data.get('elder_brother','') }}">
+            </div>
+
+            <!-- elder_sister  -->
+
+            <div class="form-group">
+                <label for="elder_sister">Elder Sister</label>
+                <input type="text" name="elder_sister" id="elder_sister" value="{{ form_data.get('elder_sister','') }}">
+            </div>
+
+            <!-- younger_brother  -->
+
+            <div class="form-group">
+                <label for="younger_brother">Younger Brother</label>
+                <input type="text" name="younger_brother" id="younger_brother"
+                    value="{{ form_data.get('younger_brother','') }}">
+            </div>
+
+            <!-- younger_sister  -->
+
+            <div class="form-group">
+                <label for="younger_sister">Younger Sister</label>
+                <input type="text" name="younger_sister" id="younger_sister"
+                    value="{{ form_data.get('younger_sister','') }}">
+            </div>
+
+            <!-- father_name  -->
+
+            <div class="form-group">
+                <label for="father_name">Father Name</label>
+                <input type="text" name="father_name" id="father_name" value="{{ form_data.get('father_name','') }}">
+            </div>
+
+            <!-- father_occupation  -->
+
+            <div class="form-group">
+                <label for="father_occupation">Father Occupation</label>
+                <input type="text" name="father_occupation" id="father_occupation"
+                    value="{{ form_data.get('father_occupation','') }}">
+            </div>
+
+            <!-- mother_name  -->
+
+            <div class="form-group">
+                <label for="mother_name">Mother Name</label>
+                <input type="text" name="mother_name" id="mother_name" value="{{ form_data.get('mother_name','') }}">
+            </div>
+
+            <!-- mother_occupation  -->
+
+            <div class="form-group">
+                <label for="mother_occupation">Mother Occupation</label>
+                <input type="text" name="mother_occupation" id="mother_occupation"
+                    value="{{ form_data.get('mother_occupation','') }}">
+            </div>
+
+            <!-- expectation  -->
+
+            <div class="form-group">
+                <label for="expectation">Expectation</label>
+                <input type="text" name="expectation" id="expectation" value="{{ form_data.get('expectation','') }}">
+            </div>
+
+            <!-- address  -->
+
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" name="address" id="address" value="{{ form_data.get('address','') }}">
+            </div>
+
+            <!-- addition_info  -->
+
+            <div class="form-group">
+                <label for="addition_info">Additional Information</label>
+                <input type="text" name="addition_info" id="addition_info"
+                    value="{{ form_data.get('addition_info','') }}">
+            </div>
+
+            <h3>♈ Raasi (Rasi Chart)</h3>
+            <div class="grid">
+                {% for i in range(1, 13) %}
+                <div class="form-group">
+                    <label for="raasi_{{i}}">Raasi {{i}}</label>
+                    <textarea name="raasi_{{i}}" id="raasi_{{i}}">{{ form_data.get('raasi_' ~ i, '') }}</textarea>
+                </div>
+                {% endfor %}
+            </div>
+
+            <hr>
+            <h3>♍ Navamsa (Navamsa Chart)</h3>
+            <div class="grid">
+                {% for i in range(1, 13) %}
+                <div class="form-group">
+                    <label for="navamsa_{{i}}">Navamsa {{i}}</label>
+                    <textarea name="navamsa_{{i}}" id="navamsa_{{i}}">{{ form_data.get('navamsa_' ~ i, '') }}</textarea>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label for="photo">Upload Photo</label>
+                <input type="file" name="photo" id="photo" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select name="gender" id="gender">
+                    <option value="">-- Select --</option>
+                    <option value="male" {% if form_data.get('gender')=='male' %}selected{% endif %}>Male</option>
+                    <option value="female" {% if form_data.get('gender')=='female' %}selected{% endif %}>Female</option>
+                </select>
+            </div>
+
+            <!-- Add more fields here following same pattern -->
+
+            <button type="submit">Generate PDF</button>
+        </form>
+
+    </div>
+
+    <script>
+        window.addEventListener("load", () => {
+            const form = document.querySelector("form#matrimonyForm");
+            if (form) form.reset();
+        });
+    </script>
+
 </body>
 
 </html>
