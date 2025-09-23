@@ -526,6 +526,10 @@ FIELD_POSITIONS = {
     "expectation":       (140, 440),
     "house_address":     (400, 401),
     "addition_info":     (480, 1070),
+    "rentalhouse":       (10, 400),
+    "lease":             (100, 400),
+    "ownhouse":          (180, 400),
+    
     # "gender":            (120, 1175),
 }
 
@@ -533,14 +537,14 @@ FIELD_POSITIONS = {
 RAASI_POSITIONS = {
     "raasi_1":  (20, 350),  "raasi_2":  (90, 350),  "raasi_3":  (180, 350),
     "raasi_4":  (260, 350), "raasi_5":  (260, 275), "raasi_6":  (260, 200),
-    "raasi_7":  (260, 130), "raasi_8":  (180, 130), "raasi_9":  (100, 130),
-    "raasi_10": (20, 130),  "raasi_11": (20, 270),  "raasi_12": (20, 200),
+    "raasi_7":  (260, 140), "raasi_8":  (180, 140), "raasi_9":  (100, 140),
+    "raasi_10": (20, 140),  "raasi_11": (20, 270),  "raasi_12": (20, 200),
 }
 NAVAMSA_POSITIONS = {
     "navamsa_1":  (360, 350), "navamsa_2":  (435, 350), "navamsa_3":  (510, 350),
     "navamsa_4":  (590, 350), "navamsa_5":  (590, 275), "navamsa_6":  (590, 200),
-    "navamsa_7":  (590, 130), "navamsa_8":  (435, 130), "navamsa_9":  (510, 130),
-    "navamsa_10": (360, 130), "navamsa_11": (360, 270), "navamsa_12": (360, 200),
+    "navamsa_7":  (590, 140), "navamsa_8":  (435, 140), "navamsa_9":  (510, 140),
+    "navamsa_10": (360, 140), "navamsa_11": (360, 270), "navamsa_12": (360, 200),
 }
 
 # Photo box in points (x1, y1, x2, y2)
@@ -734,8 +738,60 @@ def form():
     return render_template("form.html", form_data={})
 
 
-@app.route('/debug_fields')
-def debug_fields():
+# @app.route('/debug_fields')
+# def debug_fields():
+#     template_path = "templates/matrimony_template.pdf"
+#     template_pdf = PdfReader(open(template_path, "rb"))
+#     first_page = template_pdf.pages[0]
+#     width, height = float(first_page.mediabox.width), float(first_page.mediabox.height)
+
+#     packet = io.BytesIO()
+#     can = canvas.Canvas(packet, pagesize=(width, height))
+
+#     # helper function
+#     def draw_marker(x, y, label, color=(1, 0, 0)):
+#         box_w, box_h = 120, 20  # adjust per your needs
+#         can.setFillColorRGB(*color, alpha=0.3)
+#         can.rect(x, y - box_h, box_w, box_h, fill=True, stroke=False)
+#         can.setFillColorRGB(0, 0, 0)
+#         can.setFont("Helvetica", 8)
+#         can.drawString(x + 2, y - 10, label)
+
+#     # mark FIELD_POSITIONS
+#     for field, (x, y) in FIELD_POSITIONS.items():
+#         draw_marker(x, y, field, color=(1, 0, 0))
+
+#     # mark RAASI
+#     for field, (x, y) in RAASI_POSITIONS.items():
+#         draw_marker(x, y, field, color=(0, 0, 1))
+
+#     # mark NAVAMSA
+#     for field, (x, y) in NAVAMSA_POSITIONS.items():
+#         draw_marker(x, y, field, color=(0, 0.6, 0))
+
+#     can.save()
+#     packet.seek(0)
+
+#     overlay_pdf = PdfReader(packet)
+#     writer = PdfWriter()
+#     page0 = template_pdf.pages[0]
+#     page0.merge_page(overlay_pdf.pages[0])
+#     writer.add_page(page0)
+
+#     for p in template_pdf.pages[1:]:
+#         writer.add_page(p)
+
+#     out_stream = io.BytesIO()
+#     writer.write(out_stream)
+#     out_stream.seek(0)
+
+#     return send_file(out_stream,
+#                      as_attachment=True,
+#                      download_name="debug_fields.pdf",
+#                      mimetype="application/pdf")
+
+@app.route('/debug_grid')
+def debug_grid():
     template_path = "templates/matrimony_template.pdf"
     template_pdf = PdfReader(open(template_path, "rb"))
     first_page = template_pdf.pages[0]
@@ -744,32 +800,24 @@ def debug_fields():
     packet = io.BytesIO()
     can = canvas.Canvas(packet, pagesize=(width, height))
 
-    # helper function
-    def draw_marker(x, y, label, color=(1, 0, 0)):
-        box_w, box_h = 120, 20  # adjust per your needs
-        can.setFillColorRGB(*color, alpha=0.3)
-        can.rect(x, y - box_h, box_w, box_h, fill=True, stroke=False)
-        can.setFillColorRGB(0, 0, 0)
-        can.setFont("Helvetica", 8)
-        can.drawString(x + 2, y - 10, label)
+    step = 50
+    can.setStrokeColorRGB(0.8, 0.8, 0.8)
+    can.setFont("Helvetica", 6)
 
-    # mark FIELD_POSITIONS
-    for field, (x, y) in FIELD_POSITIONS.items():
-        draw_marker(x, y, field, color=(1, 0, 0))
+    for x in range(0, int(width)+1, step):
+        can.line(x, 0, x, height)
+        can.drawString(x + 2, height - 10, str(x))
 
-    # mark RAASI
-    for field, (x, y) in RAASI_POSITIONS.items():
-        draw_marker(x, y, field, color=(0, 0, 1))
-
-    # mark NAVAMSA
-    for field, (x, y) in NAVAMSA_POSITIONS.items():
-        draw_marker(x, y, field, color=(0, 0.6, 0))
+    for y in range(0, int(height)+1, step):
+        can.line(0, y, width, y)
+        can.drawString(2, y + 2, str(y))
 
     can.save()
     packet.seek(0)
 
     overlay_pdf = PdfReader(packet)
     writer = PdfWriter()
+
     page0 = template_pdf.pages[0]
     page0.merge_page(overlay_pdf.pages[0])
     writer.add_page(page0)
@@ -783,8 +831,9 @@ def debug_fields():
 
     return send_file(out_stream,
                      as_attachment=True,
-                     download_name="debug_fields.pdf",
+                     download_name="debug_grid.pdf",
                      mimetype="application/pdf")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
