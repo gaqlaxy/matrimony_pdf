@@ -1,0 +1,10 @@
+{
+    "build": {
+        "builder": "python"
+    },
+    "deploy": {
+        "startCommand": "gunicorn app:app",
+        "healthcheckPath": "/",
+        "restartPolicyType": "ON_FAILURE"
+    }
+}
