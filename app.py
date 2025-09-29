@@ -187,11 +187,11 @@ def form():
                 top = height - y
                 font_family = "Arial, sans-serif" if value.isascii() else "'Latha', sans-serif"
                 font_size = "15pt"
-                font_weight = "bold"
+                # font_weight = "bold"
                 safe_value = html.escape(value)
                 html_content += (
                     f"<div class='field' style='left:{left}pt; top:{top}pt; "
-                    f"font-family:{font_family}; font-weight:{font_weight}; font-size:{font_size};'>{safe_value}</div>\n"
+                    f"font-family:{font_family};  font-size:{font_size};'>{safe_value}</div>\n"
                 )
 
         # Add Raasi + Navamsa
@@ -201,10 +201,10 @@ def form():
                 if value:
                     left = x
                     top = height - y
-                    font_weight = "bold"
+                    
                     font_family = "Arial, sans-serif" if value.isascii() else "'Latha', sans-serif"
                     font_size = "9pt" if value.isascii() else "8pt"
-                    font_weight = "bold"
+                    
                     safe_value = html.escape(value)
                     # html_content += (
                     #     f"<div class='field' style='left:{left}pt; top:{top}pt; "
@@ -215,7 +215,7 @@ def form():
                     html_content += (
     f"<div class='field' style='left:{left}pt; top:{top}pt; "
     f"width:60pt; height:30pt; display:flex; align-items:center; justify-content:center; "
-    f"text-align:center; font-family:{font_family}; font-weight:{font_weight}; font-size:{font_size}; "
+    f"text-align:center; font-family:{font_family}; font-size:{font_size}; "
     f"white-space:pre-wrap; word-break:break-word;'>"
     f"{safe_value}</div>\n"
 )
