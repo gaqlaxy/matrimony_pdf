@@ -168,6 +168,9 @@ def form():
     white-space: pre-wrap;
     word-wrap: break-word;
     color: {color};
+    font-weight: bold;
+    text-shadow: 0.5px 0 0 currentColor, -0.5px 0 0 currentColor,
+               0 0.5px 0 currentColor, 0 -0.5px 0 currentColor;
   }}
   .photo {{
     position: absolute;
@@ -206,12 +209,7 @@ def form():
                     font_size = "9pt" if value.isascii() else "8pt"
                     
                     safe_value = html.escape(value)
-                    # html_content += (
-                    #     f"<div class='field' style='left:{left}pt; top:{top}pt; "
-                    #     f"font-family:{font_family}; font-weight:{font_weight}; font-size:{font_size}; "
-                    #     f"text-align:center; width:60pt; white-space:pre-wrap; word-break:break-word;'>"
-                    #     f"{safe_value}</div>\n"
-                    # )
+                   
                     html_content += (
     f"<div class='field' style='left:{left}pt; top:{top}pt; "
     f"width:60pt; height:30pt; display:flex; align-items:center; justify-content:center; "
