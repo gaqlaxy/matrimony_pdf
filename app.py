@@ -201,13 +201,14 @@ def form():
                 if value:
                     left = x
                     top = height - y
+                    font_weight = "bold"
                     font_family = "Arial, sans-serif" if value.isascii() else "'Latha', sans-serif"
                     font_size = "9pt" if value.isascii() else "8pt"
                     font_weight = "bold"
                     safe_value = html.escape(value)
                     # html_content += (
                     #     f"<div class='field' style='left:{left}pt; top:{top}pt; "
-                    #     f"font-family:{font_family}; font-size:{font_size}; "
+                    #     f"font-family:{font_family}; font-weight:{font_weight}; font-size:{font_size}; "
                     #     f"text-align:center; width:60pt; white-space:pre-wrap; word-break:break-word;'>"
                     #     f"{safe_value}</div>\n"
                     # )
