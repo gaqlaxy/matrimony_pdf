@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, send_file
 from PyPDF2 import PdfReader, PdfWriter
 from weasyprint import HTML
 from werkzeug.utils import secure_filename
+from reportlab.pdfgen import canvas
 
 app = Flask(__name__, template_folder="templates-html")
 app.config["UPLOAD_FOLDER"] = "uploads"
@@ -215,19 +216,46 @@ def form():
                 )
 
         # --- Raasi + Navamsa ---
+        # --- Raasi + Navamsa ---
+        # --- Raasi + Navamsa (fixed box + Latha Bold) ---
+        # --- Raasi + Navamsa (multi-line support, Latha Bold) ---
+# --- Raasi + Navamsa (multi-line, Latha Bold, centered) ---
+       # Raasi + Navamsa fields (multi-line, centered, Latha Bold)
         for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
             for field, (x, y) in dct.items():
                 value = form_data.get(field, "")
                 if value:
                     left = x
-                    top = height - y
-                    safe_html = render_mixed_html(value, eng_style_raasi, tam_style_raasi)
+                    top = height - y  # top-left origin
+                    safe_value = html.escape(value)
+
+                    font_size = "10pt" if value.isascii() else "8pt"
+                    font_family = "'Arial', sans-serif" if value.isascii() else "'Latha', sans-serif"
+
                     html_content += (
-                        f"<div class='field' style='left:{left}pt; top:{top}pt; "
+                        f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
                         f"width:60pt; height:30pt; display:flex; align-items:center; justify-content:center; "
-                        f"text-align:center;'>"
-                        f"{safe_html}</div>\n"
+                        f"text-align:center; font-family:{font_family}; font-size:{font_size}; "
+                        f"font-weight:bold; line-height:1.1; white-space:pre-wrap; word-break:break-word;'>"
+                        f"{safe_value}</div>\n"
                     )
+
+
+
+
+        # for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
+        #     for field, (x, y) in dct.items():
+        #         value = form_data.get(field, "")
+        #         if value:
+        #             left = x
+        #             top = height - y
+        #             safe_html = render_mixed_html(value, eng_style_raasi, tam_style_raasi)
+        #             html_content += (
+        #                 f"<div class='field' style='left:{left}pt; top:{top}pt; "
+        #                 f"width:60pt; height:30pt; display:flex; align-items:center; justify-content:center; "
+        #                 f"text-align:center;'>"
+        #                 f"{safe_html}</div>\n"
+        #             )
 
         # --- Photo ---
         if photo_data:
@@ -266,6 +294,106 @@ def form():
         return send_file(final_pdf, as_attachment=True, download_name="matrimony_filled.pdf", mimetype="application/pdf")
 
     return render_template("form.html", form_data={})
+
+
+@app.route('/debug_grid')
+def debug_grid():
+    template_path = "templates/matrimony_template.pdf"
+    template_pdf = PdfReader(open(template_path, "rb"))
+    first_page = template_pdf.pages[0]
+    width, height = float(first_page.mediabox.width), float(first_page.mediabox.height)
+
+    packet = io.BytesIO()
+    can = canvas.Canvas(packet, pagesize=(width, height))
+
+    step = 50
+    can.setStrokeColorRGB(0.8, 0.8, 0.8)
+    can.setFont("Helvetica", 6)
+
+    for x in range(0, int(width)+1, step):
+        can.line(x, 0, x, height)
+        can.drawString(x + 2, height - 10, str(x))
+
+    for y in range(0, int(height)+1, step):
+        can.line(0, y, width, y)
+        can.drawString(2, y + 2, str(y))
+
+    can.save()
+    packet.seek(0)
+
+    overlay_pdf = PdfReader(packet)
+    writer = PdfWriter()
+
+    page0 = template_pdf.pages[0]
+    page0.merge_page(overlay_pdf.pages[0])
+    writer.add_page(page0)
+
+    for p in template_pdf.pages[1:]:
+        writer.add_page(p)
+
+    out_stream = io.BytesIO()
+    writer.write(out_stream)
+    out_stream.seek(0)
+
+    return send_file(out_stream,
+                     as_attachment=True,
+                     download_name="debug_grid.pdf",
+                     mimetype="application/pdf")
+
+
+
+
+@app.route('/debug_fields')
+def debug_fields():
+    template_path = "templates/matrimony_template.pdf"
+    template_pdf = PdfReader(open(template_path, "rb"))
+    first_page = template_pdf.pages[0]
+    width, height = float(first_page.mediabox.width), float(first_page.mediabox.height)
+
+    packet = io.BytesIO()
+    can = canvas.Canvas(packet, pagesize=(width, height))
+
+    # helper function
+    def draw_marker(x, y, label, color=(1, 0, 0)):
+        box_w, box_h = 120, 20  # adjust per your needs
+        can.setFillColorRGB(*color, alpha=0.3)
+        can.rect(x, y - box_h, box_w, box_h, fill=True, stroke=False)
+        can.setFillColorRGB(0, 0, 0)
+        can.setFont("Helvetica", 8)
+        can.drawString(x + 2, y - 10, label)
+
+    # mark FIELD_POSITIONS
+    for field, (x, y) in FIELD_POSITIONS.items():
+        draw_marker(x, y, field, color=(1, 0, 0))
+
+    # mark RAASI
+    for field, (x, y) in RAASI_POSITIONS.items():
+        draw_marker(x, y, field, color=(0, 0, 1))
+
+    # mark NAVAMSA
+    for field, (x, y) in NAVAMSA_POSITIONS.items():
+        draw_marker(x, y, field, color=(0, 0.6, 0))
+
+    can.save()
+    packet.seek(0)
+
+    overlay_pdf = PdfReader(packet)
+    writer = PdfWriter()
+    page0 = template_pdf.pages[0]
+    page0.merge_page(overlay_pdf.pages[0])
+    writer.add_page(page0)
+
+    for p in template_pdf.pages[1:]:
+        writer.add_page(p)
+
+    out_stream = io.BytesIO()
+    writer.write(out_stream)
+    out_stream.seek(0)
+
+    return send_file(out_stream,
+                     as_attachment=True,
+                     download_name="debug_fields.pdf",
+                     mimetype="application/pdf")
 
 if __name__ == "__main__":
     app.run(debug=True)
