@@ -1,14 +1,8 @@
-
-
-
-
-import io, base64, os, html, json
-from flask import Flask, render_template, request, send_file, redirect, url_for
-
+import io, base64, os, html, json, re
+from flask import Flask, render_template, request, send_file
 from PyPDF2 import PdfReader, PdfWriter
 from weasyprint import HTML
 from werkzeug.utils import secure_filename
-from reportlab.pdfgen import canvas
 
 app = Flask(__name__, template_folder="templates-html")
 app.config["UPLOAD_FOLDER"] = "uploads"
@@ -47,11 +41,8 @@ FIELD_POSITIONS = {
     "rentalhouse":       (10, 400),
     "lease":             (100, 400),
     "ownhouse":          (180, 400),
-    
-    # "gender":            (120, 1175),
 }
 
-# Raasi & Navamsa positions
 RAASI_POSITIONS = {
     "raasi_1":  (20, 350),  "raasi_2":  (90, 350),  "raasi_3":  (180, 350),
     "raasi_4":  (260, 350), "raasi_5":  (260, 275), "raasi_6":  (260, 200),
@@ -65,12 +56,10 @@ NAVAMSA_POSITIONS = {
     "navamsa_10": (360, 140), "navamsa_11": (360, 270), "navamsa_12": (360, 200),
 }
 
-# Photo box in points (x1, y1, x2, y2)
 PHOTO_BOX = (469, 410, 920, 1041.5)
 
-
 # -------------------------
-# Metadata helpers
+# Helpers
 # -------------------------
 def save_pdf_with_metadata(pdf_stream, form_data):
     reader = PdfReader(pdf_stream)
@@ -84,7 +73,6 @@ def save_pdf_with_metadata(pdf_stream, form_data):
     out.seek(0)
     return out
 
-
 def extract_form_data_from_pdf(file_stream):
     reader = PdfReader(file_stream)
     metadata = reader.metadata
@@ -95,6 +83,27 @@ def extract_form_data_from_pdf(file_stream):
             return {}
     return {}
 
+# Detect Tamil characters
+def contains_tamil(s: str) -> bool:
+    return bool(s) and any("\u0B80" <= ch <= "\u0BFF" for ch in s)
+
+_tamil_split_re = re.compile(r'[\u0B80-\u0BFF]+|[^\u0B80-\u0BFF]+')
+
+def split_into_runs(s: str):
+    if not s:
+        return []
+    return _tamil_split_re.findall(s)
+
+def render_mixed_html(value: str, eng_style: str, tam_style: str) -> str:
+    parts = split_into_runs(value)
+    out = []
+    for part in parts:
+        esc = html.escape(part)
+        if contains_tamil(part):
+            out.append(f"<span style=\"{tam_style}\">{esc}</span>")
+        else:
+            out.append(f"<span style=\"{eng_style}\">{esc}</span>")
+    return "".join(out)
 
 # -------------------------
 # Routes
@@ -104,18 +113,14 @@ def form():
     form_data = {}
 
     if request.method == "POST":
-        # Case 1: User uploaded PDF to edit
         if "pdf" in request.files and request.files["pdf"].filename != "":
             pdf_file = request.files["pdf"]
             form_data = extract_form_data_from_pdf(pdf_file)
             return render_template("form.html", form_data=form_data)
 
-        # Case 2: User submitted form to generate PDF
         form_data = request.form.to_dict()
-        
 
-
-        # Handle photo upload
+        # Photo
         photo_data = None
         if "photo" in request.files and request.files["photo"].filename != "":
             photo_file = request.files["photo"]
@@ -126,13 +131,13 @@ def form():
             mime = "image/png" if ext == ".png" else "image/jpeg"
             photo_data = f"data:{mime};base64,{b64_str}"
 
-        # Load template PDF
+        # Template PDF
         template_path = "templates/matrimony_template.pdf"
         template_pdf = PdfReader(open(template_path, "rb"))
         first_page = template_pdf.pages[0]
         width, height = float(first_page.mediabox.width), float(first_page.mediabox.height)
 
-        # Decide color based on gender
+        # Gender-based color
         gender = form_data.get("gender", "").lower()
         if gender == "male":
             color = "rgb(168, 0, 0)"
@@ -141,37 +146,46 @@ def form():
         else:
             color = "#000000"
 
-        # Font path
-        latha_path = f"file://{os.path.join(app.root_path, 'fonts', 'Latha.ttf')}"
+        # Fonts
+        latha_regular = f"file://{os.path.join(app.root_path, 'fonts', 'Latha.ttf')}"
+        latha_bold = f"file://{os.path.join(app.root_path, 'fonts', 'Latha-Bold.ttf')}"
 
-        # Build overlay HTML
         html_content = f"""<!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
 <style>
   @page {{ size: {width}pt {height}pt; margin: 0; }}
+
   @font-face {{
     font-family: 'Latha';
-    src: url('{latha_path}') format('truetype');
+    src: url('{latha_regular}') format('truetype');
+    font-weight: normal;
+    font-style: normal;
   }}
+  @font-face {{
+    font-family: 'Latha';
+    src: url('{latha_bold}') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }}
+
   html, body {{
     margin: 0;
     padding: 0;
     width: {width}pt;
     height: {height}pt;
-    font-weight: bold;
     font-family: 'Latha', sans-serif;
+    font-weight: bold;
   }}
+
   .field {{
     position: absolute;
     white-space: pre-wrap;
     word-wrap: break-word;
     color: {color};
-    font-weight: bold;
-    text-shadow: 0.5px 0 0 currentColor, -0.5px 0 0 currentColor,
-               0 0.5px 0 currentColor, 0 -0.5px 0 currentColor;
   }}
+
   .photo {{
     position: absolute;
     object-fit: contain;
@@ -182,43 +196,40 @@ def form():
 <body>
 """
 
-        # Add fields
+        # Styles
+        eng_style_main = "font-family:'Arial', sans-serif; font-size:17pt; font-weight:bold; line-height:1;"
+        tam_style_main = "font-family:'Latha', sans-serif; font-size:15pt; font-weight:bold; line-height:1;"
+        eng_style_raasi = "font-family:'Arial', sans-serif; font-size:11pt; font-weight:bold; line-height:1;"
+        tam_style_raasi = "font-family:'Latha', sans-serif; font-size:9pt; font-weight:bold; line-height:1;"
+
+        # --- Main Fields ---
         for field, (x, y) in FIELD_POSITIONS.items():
             value = form_data.get(field, "")
             if value:
                 left = x
                 top = height - y
-                font_family = "Arial, sans-serif" if value.isascii() else "'Latha', sans-serif"
-                font_size = "15pt"
-                # font_weight = "bold"
-                safe_value = html.escape(value)
+                safe_html = render_mixed_html(value, eng_style_main, tam_style_main)
                 html_content += (
-                    f"<div class='field' style='left:{left}pt; top:{top}pt; "
-                    f"font-family:{font_family};  font-size:{font_size};'>{safe_value}</div>\n"
+                    f"<div class='field' style='left:{left}pt; top:{top}pt;'>"
+                    f"{safe_html}</div>\n"
                 )
 
-        # Add Raasi + Navamsa
+        # --- Raasi + Navamsa ---
         for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
             for field, (x, y) in dct.items():
                 value = form_data.get(field, "")
                 if value:
                     left = x
                     top = height - y
-                    
-                    font_family = "Arial, sans-serif" if value.isascii() else "'Latha', sans-serif"
-                    font_size = "9pt" if value.isascii() else "8pt"
-                    
-                    safe_value = html.escape(value)
-                   
+                    safe_html = render_mixed_html(value, eng_style_raasi, tam_style_raasi)
                     html_content += (
-    f"<div class='field' style='left:{left}pt; top:{top}pt; "
-    f"width:60pt; height:30pt; display:flex; align-items:center; justify-content:center; "
-    f"text-align:center; font-family:{font_family}; font-size:{font_size}; "
-    f"white-space:pre-wrap; word-break:break-word;'>"
-    f"{safe_value}</div>\n"
-)
+                        f"<div class='field' style='left:{left}pt; top:{top}pt; "
+                        f"width:60pt; height:30pt; display:flex; align-items:center; justify-content:center; "
+                        f"text-align:center;'>"
+                        f"{safe_html}</div>\n"
+                    )
 
-        # Add photo
+        # --- Photo ---
         if photo_data:
             x1, y1, x2, y2 = PHOTO_BOX
             box_w = x2 - x1
@@ -254,106 +265,7 @@ def form():
 
         return send_file(final_pdf, as_attachment=True, download_name="matrimony_filled.pdf", mimetype="application/pdf")
 
-    # GET request → empty form
     return render_template("form.html", form_data={})
-
-
-# @app.route('/debug_fields')
-# def debug_fields():
-#     template_path = "templates/matrimony_template.pdf"
-#     template_pdf = PdfReader(open(template_path, "rb"))
-#     first_page = template_pdf.pages[0]
-#     width, height = float(first_page.mediabox.width), float(first_page.mediabox.height)
-
-#     packet = io.BytesIO()
-#     can = canvas.Canvas(packet, pagesize=(width, height))
-
-#     # helper function
-#     def draw_marker(x, y, label, color=(1, 0, 0)):
-#         box_w, box_h = 120, 20  # adjust per your needs
-#         can.setFillColorRGB(*color, alpha=0.3)
-#         can.rect(x, y - box_h, box_w, box_h, fill=True, stroke=False)
-#         can.setFillColorRGB(0, 0, 0)
-#         can.setFont("Helvetica", 8)
-#         can.drawString(x + 2, y - 10, label)
-
-#     # mark FIELD_POSITIONS
-#     for field, (x, y) in FIELD_POSITIONS.items():
-#         draw_marker(x, y, field, color=(1, 0, 0))
-
-#     # mark RAASI
-#     for field, (x, y) in RAASI_POSITIONS.items():
-#         draw_marker(x, y, field, color=(0, 0, 1))
-
-#     # mark NAVAMSA
-#     for field, (x, y) in NAVAMSA_POSITIONS.items():
-#         draw_marker(x, y, field, color=(0, 0.6, 0))
-
-#     can.save()
-#     packet.seek(0)
-
-#     overlay_pdf = PdfReader(packet)
-#     writer = PdfWriter()
-#     page0 = template_pdf.pages[0]
-#     page0.merge_page(overlay_pdf.pages[0])
-#     writer.add_page(page0)
-
-#     for p in template_pdf.pages[1:]:
-#         writer.add_page(p)
-
-#     out_stream = io.BytesIO()
-#     writer.write(out_stream)
-#     out_stream.seek(0)
-
-#     return send_file(out_stream,
-#                      as_attachment=True,
-#                      download_name="debug_fields.pdf",
-#                      mimetype="application/pdf")
-
-@app.route('/debug_grid')
-def debug_grid():
-    template_path = "templates/matrimony_template.pdf"
-    template_pdf = PdfReader(open(template_path, "rb"))
-    first_page = template_pdf.pages[0]
-    width, height = float(first_page.mediabox.width), float(first_page.mediabox.height)
-
-    packet = io.BytesIO()
-    can = canvas.Canvas(packet, pagesize=(width, height))
-
-    step = 50
-    can.setStrokeColorRGB(0.8, 0.8, 0.8)
-    can.setFont("Helvetica", 6)
-
-    for x in range(0, int(width)+1, step):
-        can.line(x, 0, x, height)
-        can.drawString(x + 2, height - 10, str(x))
-
-    for y in range(0, int(height)+1, step):
-        can.line(0, y, width, y)
-        can.drawString(2, y + 2, str(y))
-
-    can.save()
-    packet.seek(0)
-
-    overlay_pdf = PdfReader(packet)
-    writer = PdfWriter()
-
-    page0 = template_pdf.pages[0]
-    page0.merge_page(overlay_pdf.pages[0])
-    writer.add_page(page0)
-
-    for p in template_pdf.pages[1:]:
-        writer.add_page(p)
-
-    out_stream = io.BytesIO()
-    writer.write(out_stream)
-    out_stream.seek(0)
-
-    return send_file(out_stream,
-                     as_attachment=True,
-                     download_name="debug_grid.pdf",
-                     mimetype="application/pdf")
-
 
 if __name__ == "__main__":
     app.run(debug=True)
