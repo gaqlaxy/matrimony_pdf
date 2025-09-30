@@ -133,7 +133,7 @@ def form():
             photo_data = f"data:{mime};base64,{b64_str}"
 
         # Template PDF
-        template_path = "templates/matrimony_template.pdf"
+        template_path = "templates/matrimony.pdf"
         template_pdf = PdfReader(open(template_path, "rb"))
         first_page = template_pdf.pages[0]
         width, height = float(first_page.mediabox.width), float(first_page.mediabox.height)
@@ -298,7 +298,7 @@ def form():
 
 @app.route('/debug_grid')
 def debug_grid():
-    template_path = "templates/matrimony_template.pdf"
+    template_path = "templates/matrimony.pdf"
     template_pdf = PdfReader(open(template_path, "rb"))
     first_page = template_pdf.pages[0]
     width, height = float(first_page.mediabox.width), float(first_page.mediabox.height)
@@ -345,7 +345,7 @@ def debug_grid():
 
 @app.route('/debug_fields')
 def debug_fields():
-    template_path = "templates/matrimony_template.pdf"
+    template_path = "templates/matrimony.pdf"
     template_pdf = PdfReader(open(template_path, "rb"))
     first_page = template_pdf.pages[0]
     width, height = float(first_page.mediabox.width), float(first_page.mediabox.height)
