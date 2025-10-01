@@ -582,7 +582,9 @@
 
             <div class="form-group">
                 <label for="work">Work</label>
-                <input type="text" name="work" id="work" value="{{ form_data.get('work','') }}">
+                <!-- <input type="text" name="work" id="work" value="{{ form_data.get('work','') }}"> -->
+                <!-- Text area  -->
+                <textarea name="work" id="work" cols="30" rows="10" value="{{ form_data.get('work','') }}"></textarea>
             </div>
 
             <!-- monthly_income  -->
