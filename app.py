@@ -570,8 +570,8 @@ def form():
         tam_style_main = f"font-family:Latha, sans-serif; font-size:15pt; font-weight:500; color:{color}; line-height:1;"
 
         # Raasi/Navamsa styles (smaller)
-        eng_style_raasi = f"font-family:Arial, sans-serif; font-size:11pt; font-weight:500; color:{color}; line-height:1.15;"
-        tam_style_raasi = f"font-family:Latha, sans-serif; font-size:11pt; font-weight:500; color:{color}; line-height:1.15;"
+        eng_style_raasi = f"font-family:Arial, sans-serif; font-size:14pt; font-weight:500; color:{color}; line-height:1.15;"
+        tam_style_raasi = f"font-family:Latha, sans-serif; font-size:14pt; font-weight:500; color:{color}; line-height:1.15;"
 
         # --- Main Fields ---
         for field, (x, y) in FIELD_POSITIONS.items():
