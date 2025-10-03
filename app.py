@@ -410,13 +410,13 @@ RAASI_POSITIONS = {
     "raasi_1":  (20, 350),  "raasi_2":  (90, 350),  "raasi_3":  (180, 350),
     "raasi_4":  (260, 350), "raasi_5":  (260, 275), "raasi_6":  (260, 200),
     "raasi_7":  (260, 140), "raasi_8":  (180, 140), "raasi_9":  (100, 140),
-    "raasi_10": (20, 140),  "raasi_11": (20, 270),  "raasi_12": (20, 200),
+    "raasi_10": (20, 140),  "raasi_11": (20, 200),  "raasi_12": (20, 270),
 }
 NAVAMSA_POSITIONS = {
     "navamsa_1":  (360, 350), "navamsa_2":  (435, 350), "navamsa_3":  (510, 350),
     "navamsa_4":  (590, 350), "navamsa_5":  (590, 275), "navamsa_6":  (590, 200),
     "navamsa_7":  (590, 140), "navamsa_8":  (435, 140), "navamsa_9":  (510, 140),
-    "navamsa_10": (360, 140), "navamsa_11": (360, 270), "navamsa_12": (360, 200),
+    "navamsa_10": (360, 140), "navamsa_11": (360, 200), "navamsa_12": (360, 270),
 }
 
 PHOTO_BOX = (469, 410, 920, 1041.5)
