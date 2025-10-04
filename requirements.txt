@@ -4,3 +4,5 @@ PyPDF2
 weasyprint
 werkzeug
 reportlab
+firebase-admin
+
