@@ -806,6 +806,7 @@ def form():
                 )
 
         # --- Raasi + Navamsa (fixed & unindented correctly) ---
+        # --- Raasi + Navamsa (auto-size with height fit) ---
         for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
             for field, (x, y) in dct.items():
                 value = form_data.get(field, "")
@@ -815,25 +816,47 @@ def form():
                 left = x
                 top = height - y
 
-                # Split the ORIGINAL value into logical lines entered by the user
                 lines = value.splitlines()
                 if not lines:
                     lines = [""]
 
-                # For each line produce mixed-span HTML (Tamil vs ASCII), preserving inline styles including color & weight
-                rendered_lines = [render_mixed_html(line, eng_style_raasi, tam_style_raasi) for line in lines]
+                max_width_pt = 60   # box width
+                max_height_pt = 60  # total box height
+                base_size = 14
+                min_size = 8
 
-                # Wrap each rendered line in a block-level wrapper so flex stacks them correctly.
-                line_blocks = "".join([f"<div style='display:block; width:100%;'>{ln or '&nbsp;'}</div>" for ln in rendered_lines])
+                # Start from base size and shrink until it fits both width and height
+                font_size = base_size
+                while font_size > min_size:
+                    # Approximate line height (pt)
+                    line_height = font_size * 1.2
+                    total_height = len(lines) * line_height
 
-                # Container: column flex centers vertically+horizontally; each line-block is stacked vertically.
+                    # crude width check: shrink if too many chars
+                    too_wide = any(len(line) * (font_size * 0.55) > max_width_pt for line in lines)
+
+                    if total_height <= max_height_pt and not too_wide:
+                        break
+                    font_size -= 1
+
+                # Build inline styles with adjusted font size
+                eng_style = f"font-family:Arial, sans-serif; font-size:{font_size}pt; font-weight:500; color:{color}; line-height:1.2;"
+                tam_style = f"font-family:Latha, sans-serif; font-size:{font_size}pt; font-weight:500; color:{color}; line-height:1.2;"
+
+                # Render lines with mixed Tamil/English
+                rendered_lines = [render_mixed_html(line, eng_style, tam_style) for line in lines]
+
+                # Wrap each rendered line in <div>
+                line_blocks = "".join([f"<div style='display:block; width:100%; text-align:center;'>{ln or '&nbsp;'}</div>" for ln in rendered_lines])
+
+                # Container with flex centering
                 html_content += (
                     f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
-                    f"width:60pt; min-height:30pt; display:flex; flex-direction:column; "
-                    f"align-items:center; justify-content:center; text-align:center; "
-                    f"line-height:1.15; white-space:normal; word-break:normal; overflow:hidden;'>"
+                    f"width:{max_width_pt}pt; height:{max_height_pt}pt; "
+                    f"display:flex; flex-direction:column; justify-content:flex-start; align-items:center; "
+                    f"text-align:center; overflow:hidden;'>"
                     f"{line_blocks}</div>\n"
-                )
+)
 
         # --- Photo ---
         if photo_data:
