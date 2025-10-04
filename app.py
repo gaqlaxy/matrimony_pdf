@@ -786,12 +786,12 @@ def form():
 
         # Inline styles for main fields and raasi/navamsa (include color where relevant)
         # Use medium weight (500) to reduce the heavy "bold" look; change to 400 if you want lighter.
-        eng_style_main = f"font-family:Arial, sans-serif; font-size:17pt; font-weight:500; color:{color}; line-height:1;"
-        tam_style_main = f"font-family:Latha, sans-serif; font-size:15pt; font-weight:500; color:{color}; line-height:1;"
+        eng_style_main = f"font-family:Arial, sans-serif; font-size:17pt; font-weight:bold; color:{color}; line-height:1;"
+        tam_style_main = f"font-family:Latha, sans-serif; font-size:15pt; font-weight:bold; color:{color}; line-height:1;"
 
         # Raasi/Navamsa styles (smaller)
-        eng_style_raasi = f"font-family:Arial, sans-serif; font-size:14pt; font-weight:500; color:{color}; line-height:1.15;"
-        tam_style_raasi = f"font-family:Latha, sans-serif; font-size:14pt; font-weight:500; color:{color}; line-height:1.15;"
+        eng_style_raasi = f"font-family:Arial, sans-serif; font-size:14pt; font-weight:bold; color:{color}; line-height:1.15;"
+        tam_style_raasi = f"font-family:Latha, sans-serif; font-size:14pt; font-weight:bold; color:{color}; line-height:1.15;"
 
         # --- Main Fields ---
         for field, (x, y) in FIELD_POSITIONS.items():
@@ -804,59 +804,86 @@ def form():
                     f"<div class='field' style='left:{left}pt; top:{top}pt;'>"
                     f"{safe_html}</div>\n"
                 )
-
-        # --- Raasi + Navamsa (fixed & unindented correctly) ---
-        # --- Raasi + Navamsa (auto-size with height fit) ---
+                # --- Raasi + Navamsa (auto-size with small visual top offset) ---
+# --- Raasi + Navamsa (auto-size + debug borders) ---
+        # --- Raasi + Navamsa (auto-size, visually balanced) ---
         for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
             for field, (x, y) in dct.items():
                 value = form_data.get(field, "")
-                if not value:
-                    continue
+                if value:
+                    left = x
+                    top = height - y  # top-left origin
+                    safe_value = html.escape(value)
 
-                left = x
-                top = height - y
+                    font_size = "10pt" if value.isascii() else "8pt"
+                    font_family = "'Arial', sans-serif" if value.isascii() else "'Latha', sans-serif"
 
-                lines = value.splitlines()
-                if not lines:
-                    lines = [""]
+                    html_content += (
+                        f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
+                        f"width:60pt; height:30pt; display:flex; align-items:center; justify-content:center; "
+                        f"text-align:center; font-family:{font_family}; font-size:{font_size}; "
+                        f"font-weight:bold; line-height:1.1; white-space:pre-wrap; word-break:break-word;'>"
+                        f"{safe_value}</div>\n"
+                    )
 
-                max_width_pt = 60   # box width
-                max_height_pt = 60  # total box height
-                base_size = 14
-                min_size = 8
 
-                # Start from base size and shrink until it fits both width and height
-                font_size = base_size
-                while font_size > min_size:
-                    # Approximate line height (pt)
-                    line_height = font_size * 1.2
-                    total_height = len(lines) * line_height
 
-                    # crude width check: shrink if too many chars
-                    too_wide = any(len(line) * (font_size * 0.55) > max_width_pt for line in lines)
 
-                    if total_height <= max_height_pt and not too_wide:
-                        break
-                    font_size -= 1
+        # --- Raasi + Navamsa (fixed & unindented correctly) ---
+        # --- Raasi + Navamsa (auto-size with height fit) ---
+#         for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
+#             for field, (x, y) in dct.items():
+#                 value = form_data.get(field, "")
+#                 if not value:
+#                     continue
 
-                # Build inline styles with adjusted font size
-                eng_style = f"font-family:Arial, sans-serif; font-size:{font_size}pt; font-weight:500; color:{color}; line-height:1.2;"
-                tam_style = f"font-family:Latha, sans-serif; font-size:{font_size}pt; font-weight:500; color:{color}; line-height:1.2;"
+#                 left = x
+#                 top = height - y
 
-                # Render lines with mixed Tamil/English
-                rendered_lines = [render_mixed_html(line, eng_style, tam_style) for line in lines]
+#                 lines = value.splitlines()
+#                 if not lines:
+#                     lines = [""]
 
-                # Wrap each rendered line in <div>
-                line_blocks = "".join([f"<div style='display:block; width:100%; text-align:center;'>{ln or '&nbsp;'}</div>" for ln in rendered_lines])
+#                 max_width_pt = 60   # box width
+#                 max_height_pt = 60  # total box height
+#                 base_size = 14
+#                 min_size = 8
 
-                # Container with flex centering
-                html_content += (
-                    f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
-                    f"width:{max_width_pt}pt; height:{max_height_pt}pt; "
-                    f"display:flex; flex-direction:column; justify-content:flex-start; align-items:center; "
-                    f"text-align:center; overflow:hidden;'>"
-                    f"{line_blocks}</div>\n"
-)
+#                 # Start from base size and shrink until it fits both width and height
+#                 font_size = base_size
+#                 while font_size > min_size:
+#                     # Approximate line height (pt)
+#                     line_height = font_size * 1.2
+#                     total_height = len(lines) * line_height
+
+#                     # crude width check: shrink if too many chars
+#                     too_wide = any(len(line) * (font_size * 0.55) > max_width_pt for line in lines)
+
+#                     if total_height <= max_height_pt and not too_wide:
+#                         break
+#                     font_size -= 1
+
+#                 # Build inline styles with adjusted font size
+#                 eng_style = f"font-family:Arial, sans-serif; font-size:{font_size}pt; font-weight:500; color:{color}; line-height:1.2;"
+#                 tam_style = f"font-family:Latha, sans-serif; font-size:{font_size}pt; font-weight:500; color:{color}; line-height:1.2;"
+
+#                 # Render lines with mixed Tamil/English
+#                 rendered_lines = [render_mixed_html(line, eng_style, tam_style) for line in lines]
+
+#                 # Wrap each rendered line in <div>
+#                 line_blocks = "".join([f"<div style='display:block; width:100%; text-align:center;'>{ln or '&nbsp;'}</div>" for ln in rendered_lines])
+
+#                 # Container with flex centering
+#                 html_content += (
+#     f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
+#     f"width:{max_width_pt}pt; height:{max_height_pt}pt; "
+#     f"display:flex; flex-direction:column; justify-content:center; align-items:center; "
+#     f"text-align:center; overflow:hidden; border:0.5pt dashed rgba(0,0,0,0.3); "
+#     f"transform:translateY(-2pt);'>"
+#     f"{line_blocks}</div>\n"
+# )
+
+
 
         # --- Photo ---
         if photo_data:
