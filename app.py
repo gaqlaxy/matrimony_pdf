@@ -868,13 +868,13 @@ def form():
   @font-face {{
     font-family: 'Latha';
     src: url('{latha_regular}') format('truetype');
-    font-weight: normal;
+    font-weight: 600;
     font-style: normal;
   }}
   @font-face {{
     font-family: 'Latha';
     src: url('{latha_bold}') format('truetype');
-    font-weight: bold;
+    font-weight: 600;
     font-style: normal;
   }}
 
@@ -906,12 +906,12 @@ def form():
 
         # Inline styles for main fields and raasi/navamsa (include color where relevant)
         # Use medium weight (500) to reduce the heavy "bold" look; change to 400 if you want lighter.
-        eng_style_main = f"font-family:Arial, sans-serif; font-size:17pt; font-weight:bold; color:{color}; line-height:1;"
-        tam_style_main = f"font-family:Latha, sans-serif; font-size:15pt; font-weight:bold; color:{color}; line-height:1;"
+        eng_style_main = f"font-family:Arial, sans-serif; font-size:18pt; font-weight:600; color:{color}; line-height:1;"
+        tam_style_main = f"font-family:Latha, sans-serif; font-size:18pt; font-weight:600; color:{color}; line-height:1;"
 
         # Raasi/Navamsa styles (smaller)
-        eng_style_raasi = f"font-family:Arial, sans-serif; font-size:14pt; font-weight:bold; color:{color}; line-height:1.15;"
-        tam_style_raasi = f"font-family:Latha, sans-serif; font-size:14pt; font-weight:bold; color:{color}; line-height:1.15;"
+        eng_style_raasi = f"font-family:Arial, sans-serif; font-size:14pt; font-weight:600; color:{color}; line-height:1.15;"
+        tam_style_raasi = f"font-family:Latha, sans-serif; font-size:14pt; font-weight:600; color:{color}; line-height:1.15;"
 
         # --- Main Fields ---
         for field, (x, y) in FIELD_POSITIONS.items():
@@ -993,8 +993,8 @@ def form():
                 
 
                 # Base styles
-                eng_style_base = f"font-family:Arial, sans-serif; font-weight:bold; color:{color}; line-height:1.1;"
-                tam_style_base = f"font-family:Latha, sans-serif; font-weight:bold; color:{color}; line-height:1.1;"
+                eng_style_base = f"font-family:Arial, sans-serif; font-weight:600; color:{color}; line-height:1.1;"
+                tam_style_base = f"font-family:Latha, sans-serif; font-weight:600; color:{color}; line-height:1.1;"
 
                 # Split words and group 2 per line
                 words = value.split()
@@ -1004,6 +1004,8 @@ def form():
 
                 # Auto font sizing based on word count
                 if len(words) <= 2:
+                    font_size = "17pt"
+                elif len(words) <= 3:
                     font_size = "15pt"
                 elif len(words) <= 4:
                     font_size = "13pt"
@@ -1026,7 +1028,7 @@ def form():
                     f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
                     f"width:60pt; height:30pt; display:flex; flex-direction:column; "
                     f"justify-content:center; align-items:center; text-align:center; "
-                    f"font-weight:bold; white-space:pre-wrap; word-break:break-word;'>"
+                    f"font-weight:600; white-space:pre-wrap; word-break:break-word;'>"
                     f"{line_blocks}</div>\n"
                 )
 
