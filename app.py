@@ -512,92 +512,212 @@ def logout():
     return redirect(url_for("login_page"))
 
 
+# @app.route("/login")
+# def login_page():
+#     return """
+#     <h2>Login</h2>
+#     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+#     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+#     <script>
+#       const firebaseConfig = {
+#         apiKey: "AIzaSyC6Cekt-KpbH5rq480JxFZ77A580gXskVg",
+#         authDomain: "balajimatri-67547.firebaseapp.com",
+#         projectId: "balajimatri-67547"
+#       };
+#       firebase.initializeApp(firebaseConfig);
+
+#       const auth = firebase.auth();
+
+#       function login() {
+#         const email = document.getElementById("email").value;
+#         const password = document.getElementById("password").value;
+#         auth.signInWithEmailAndPassword(email, password)
+#           .then(userCredential => userCredential.user.getIdToken())
+#           .then(idToken => fetch("/verify_token", {
+#               method: "POST",
+#               headers: {"Content-Type": "application/json"},
+#               body: JSON.stringify({idToken})
+#           }))
+#           .then(res => res.json())
+#           .then(data => {
+#               if (data.status === "success") {
+#                   window.location.href = data.redirect;
+#               } else {
+#                   alert("Login failed: " + data.message);
+#               }
+#           })
+#           .catch(err => alert(err.message));
+#       }
+#     </script>
+#     <input type="email" id="email" placeholder="Email"><br>
+#     <input type="password" id="password" placeholder="Password"><br>
+#     <button onclick="login()">Login</button>
+#     <p>Don't have an account? <a href="/signup">Sign up here</a></p>
+#     """
 @app.route("/login")
 def login_page():
     return """
-    <h2>Login</h2>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyC6Cekt-KpbH5rq480JxFZ77A580gXskVg",
-        authDomain: "balajimatri-67547.firebaseapp.com",
-        projectId: "balajimatri-67547"
-      };
-      firebase.initializeApp(firebaseConfig);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | Balaji Matrimony</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+  <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center">
+    <h2 class="text-2xl font-bold mb-6 text-gray-700">Welcome Back</h2>
+    <input type="email" id="email" placeholder="Email"
+      class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    <input type="password" id="password" placeholder="Password"
+      class="w-full mb-6 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    <button onclick="login()"
+      class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Login</button>
+    <p class="mt-4 text-gray-600 text-sm">Don’t have an account? 
+      <a href="/signup" class="text-blue-600 hover:underline">Sign up here</a>
+    </p>
+  </div>
 
-      const auth = firebase.auth();
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC6Cekt-KpbH5rq480JxFZ77A580gXskVg",
+      authDomain: "balajimatri-67547.firebaseapp.com",
+      projectId: "balajimatri-67547"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-      function login() {
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-        auth.signInWithEmailAndPassword(email, password)
-          .then(userCredential => userCredential.user.getIdToken())
-          .then(idToken => fetch("/verify_token", {
-              method: "POST",
-              headers: {"Content-Type": "application/json"},
-              body: JSON.stringify({idToken})
-          }))
-          .then(res => res.json())
-          .then(data => {
-              if (data.status === "success") {
-                  window.location.href = data.redirect;
-              } else {
-                  alert("Login failed: " + data.message);
-              }
-          })
-          .catch(err => alert(err.message));
-      }
-    </script>
-    <input type="email" id="email" placeholder="Email"><br>
-    <input type="password" id="password" placeholder="Password"><br>
-    <button onclick="login()">Login</button>
-    <p>Don't have an account? <a href="/signup">Sign up here</a></p>
-    """
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => userCredential.user.getIdToken())
+        .then(idToken => fetch("/verify_token", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({idToken})
+        }))
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "success") {
+            window.location.href = data.redirect;
+          } else {
+            alert("Login failed: " + data.message);
+          }
+        })
+        .catch(err => alert(err.message));
+    }
+  </script>
+</body>
+</html>
+"""
 
 
+
+# @app.route("/signup")
+# def signup_page():
+#     return """
+#     <h2>Signup</h2>
+#     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+#     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+#     <script>
+#       const firebaseConfig = {
+#         apiKey: "AIzaSyC6Cekt-KpbH5rq480JxFZ77A580gXskVg",
+#         authDomain: "balajimatri-67547.firebaseapp.com",
+#         projectId: "balajimatri-67547"
+#       };
+#       firebase.initializeApp(firebaseConfig);
+
+#       const auth = firebase.auth();
+
+#       function signup() {
+#         const email = document.getElementById("email").value;
+#         const password = document.getElementById("password").value;
+#         auth.createUserWithEmailAndPassword(email, password)
+#           .then(userCredential => userCredential.user.getIdToken())
+#           .then(idToken => fetch("/verify_token", {
+#               method: "POST",
+#               headers: {"Content-Type": "application/json"},
+#               body: JSON.stringify({idToken})
+#           }))
+#           .then(res => res.json())
+#           .then(data => {
+#               if (data.status === "success") {
+#                   window.location.href = data.redirect;
+#               } else {
+#                   alert("Signup failed: " + data.message);
+#               }
+#           })
+#           .catch(err => alert(err.message));
+#       }
+#     </script>
+#     <input type="email" id="email" placeholder="Email"><br>
+#     <input type="password" id="password" placeholder="Password"><br>
+#     <button onclick="signup()">Sign Up</button>
+#     <p>Already have an account? <a href="/login">Login here</a></p>
+#     """
 @app.route("/signup")
 def signup_page():
     return """
-    <h2>Signup</h2>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyC6Cekt-KpbH5rq480JxFZ77A580gXskVg",
-        authDomain: "balajimatri-67547.firebaseapp.com",
-        projectId: "balajimatri-67547"
-      };
-      firebase.initializeApp(firebaseConfig);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup | Balaji Matrimony</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+  <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center">
+    <h2 class="text-2xl font-bold mb-6 text-gray-700">Create an Account</h2>
+    <input type="email" id="email" placeholder="Email"
+      class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    <input type="password" id="password" placeholder="Password"
+      class="w-full mb-6 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    <button onclick="signup()"
+      class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Sign Up</button>
+    <p class="mt-4 text-gray-600 text-sm">Already have an account? 
+      <a href="/login" class="text-blue-600 hover:underline">Login here</a>
+    </p>
+  </div>
 
-      const auth = firebase.auth();
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC6Cekt-KpbH5rq480JxFZ77A580gXskVg",
+      authDomain: "balajimatri-67547.firebaseapp.com",
+      projectId: "balajimatri-67547"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-      function signup() {
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-        auth.createUserWithEmailAndPassword(email, password)
-          .then(userCredential => userCredential.user.getIdToken())
-          .then(idToken => fetch("/verify_token", {
-              method: "POST",
-              headers: {"Content-Type": "application/json"},
-              body: JSON.stringify({idToken})
-          }))
-          .then(res => res.json())
-          .then(data => {
-              if (data.status === "success") {
-                  window.location.href = data.redirect;
-              } else {
-                  alert("Signup failed: " + data.message);
-              }
-          })
-          .catch(err => alert(err.message));
-      }
-    </script>
-    <input type="email" id="email" placeholder="Email"><br>
-    <input type="password" id="password" placeholder="Password"><br>
-    <button onclick="signup()">Sign Up</button>
-    <p>Already have an account? <a href="/login">Login here</a></p>
-    """
+    function signup() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => userCredential.user.getIdToken())
+        .then(idToken => fetch("/verify_token", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({idToken})
+        }))
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "success") {
+            window.location.href = data.redirect;
+          } else {
+            alert("Signup failed: " + data.message);
+          }
+        })
+        .catch(err => alert(err.message));
+    }
+  </script>
+</body>
+</html>
+"""
+
 
 # -------------------------
 # PDF Section (only for logged in users)
@@ -806,25 +926,104 @@ def form():
                 )
                 # --- Raasi + Navamsa (auto-size with small visual top offset) ---
 # --- Raasi + Navamsa (auto-size + debug borders) ---
-        # --- Raasi + Navamsa (auto-size, visually balanced) ---
+        
+        # --- Raasi + Navamsa (auto-size + Tamil/English + gender color) ---
+        # for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
+        #     for field, (x, y) in dct.items():
+        #         value = form_data.get(field, "")
+        #         if not value:
+        #             continue
+
+        #         left = x
+        #         top = height - y  # top-left origin
+
+        #         # Choose styles with color (same color logic as main fields)
+        #         eng_style_box = f"font-family:Arial, sans-serif; font-size:10pt; font-weight:bold; color:{color}; line-height:1.1;"
+        #         tam_style_box = f"font-family:Latha, sans-serif; font-size:9pt; font-weight:bold; color:{color}; line-height:1.1;"
+
+        #         # Render text with Tamil/English detection
+        #         safe_html = render_mixed_html(value, eng_style_box, tam_style_box)
+
+        #         # Keep your old working flex layout exactly
+        #         html_content += (
+        #             f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
+        #             f"width:60pt; height:30pt; display:flex; align-items:center; justify-content:center; "
+        #             f"text-align:center; font-weight:bold; white-space:pre-wrap; word-break:break-word;'>"
+        #             f"{safe_html}</div>\n"
+        #         )
+        # --- Raasi + Navamsa (Tamil/English + gender color + correct alignment) ---
+        # for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
+        #     for field, (x, y) in dct.items():
+        #         value = form_data.get(field, "")
+        #         if not value:
+        #             continue
+
+        #         left = x
+        #         top = height - y  # top-left origin
+
+        #         # Font sizing logic same as old version
+        #         if value.isascii():
+        #             eng_style_box = f"font-family:Arial, sans-serif; font-size:10pt; font-weight:bold; color:{color}; line-height:1.1;"
+        #             tam_style_box = f"font-family:Latha, sans-serif; font-size:9pt; font-weight:bold; color:{color}; line-height:1.1;"
+        #         else:
+        #             eng_style_box = f"font-family:Arial, sans-serif; font-size:9pt; font-weight:bold; color:{color}; line-height:1.1;"
+        #             tam_style_box = f"font-family:Latha, sans-serif; font-size:8pt; font-weight:bold; color:{color}; line-height:1.1;"
+
+        #         # Render text with Tamil/English detection and color
+        #         safe_html = render_mixed_html(value, eng_style_box, tam_style_box)
+
+        #         # Use your old working flex layout exactly (for alignment)
+        #         html_content += (
+        #             f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
+        #             f"width:60pt; height:30pt; display:flex; align-items:center; justify-content:center; "
+        #             f"text-align:center; flex-wrap:wrap; font-weight:bold; line-height:1.1; white-space:pre-wrap; word-break:break-word;'>"
+        #             f"{safe_html}</div>\n"
+        #         )
+        # --- Raasi + Navamsa (Tamil/English + gender color + correct alignment + smart line split) ---
         for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
             for field, (x, y) in dct.items():
                 value = form_data.get(field, "")
-                if value:
-                    left = x
-                    top = height - y  # top-left origin
-                    safe_value = html.escape(value)
+                if not value:
+                    continue
 
-                    font_size = "10pt" if value.isascii() else "8pt"
-                    font_family = "'Arial', sans-serif" if value.isascii() else "'Latha', sans-serif"
+                left = x
+                top = height - y  # top-left origin
 
-                    html_content += (
-                        f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
-                        f"width:60pt; height:30pt; display:flex; align-items:center; justify-content:center; "
-                        f"text-align:center; font-family:{font_family}; font-size:{font_size}; "
-                        f"font-weight:bold; line-height:1.1; white-space:pre-wrap; word-break:break-word;'>"
-                        f"{safe_value}</div>\n"
-                    )
+                # Decide font style (same as before)
+                eng_style_box = f"font-family:Arial, sans-serif; font-size:10pt; font-weight:bold; color:{color}; line-height:1.1;"
+                tam_style_box = f"font-family:Latha, sans-serif; font-size:9pt; font-weight:bold; color:{color}; line-height:1.1;"
+
+                # --- Auto split logic ---
+                # If the value is long (or has spaces / Tamil + English mixed), split into 2 lines
+                if len(value) > 10 or " " in value:
+                    # Split roughly in the middle by space or midpoint
+                    parts = value.split(" ")
+                    if len(parts) >= 2:
+                        lines = [" ".join(parts[:len(parts)//2]), " ".join(parts[len(parts)//2:])]
+                    else:
+                        mid = len(value)//2
+                        lines = [value[:mid], value[mid:]]
+                else:
+                    lines = [value]
+
+                # Render each line using Tamil/English mixed styling
+                rendered_lines = [render_mixed_html(line.strip(), eng_style_box, tam_style_box) for line in lines]
+
+                # Stack vertically inside same 60×30 pt box
+                line_blocks = "".join(
+                    [f"<div style='width:100%; text-align:center;'>{ln or '&nbsp;'}</div>" for ln in rendered_lines]
+                )
+
+                html_content += (
+                    f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
+                    f"width:60pt; height:30pt; display:flex; flex-direction:column; "
+                    f"justify-content:center; align-items:center; text-align:center; "
+                    f"font-weight:bold; line-height:1.1; white-space:pre-wrap; word-break:break-word;'>"
+                    f"{line_blocks}</div>\n"
+                )
+
+
+
 
 
 
