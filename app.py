@@ -1004,9 +1004,9 @@ def form():
 
                 # Auto font sizing based on word count
                 if len(words) <= 2:
-                    font_size = "11pt"
+                    font_size = "15pt"
                 elif len(words) <= 4:
-                    font_size = "10pt"
+                    font_size = "13pt"
                 else:
                     font_size = "9pt"
 
