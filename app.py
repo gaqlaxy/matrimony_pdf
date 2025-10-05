@@ -989,98 +989,97 @@ def form():
                 left = x
                 top = height - y  # top-left origin
 
-                # Decide font style (same as before)
-                eng_style_box = f"font-family:Arial, sans-serif; font-size:10pt; font-weight:bold; color:{color}; line-height:1.1;"
-                tam_style_box = f"font-family:Latha, sans-serif; font-size:9pt; font-weight:bold; color:{color}; line-height:1.1;"
+                # Choose text color by gender
+                
 
-                # --- Auto split logic ---
-                # If the value is long (or has spaces / Tamil + English mixed), split into 2 lines
-                if len(value) > 10 or " " in value:
-                    # Split roughly in the middle by space or midpoint
-                    parts = value.split(" ")
-                    if len(parts) >= 2:
-                        lines = [" ".join(parts[:len(parts)//2]), " ".join(parts[len(parts)//2:])]
-                    else:
-                        mid = len(value)//2
-                        lines = [value[:mid], value[mid:]]
+                # Base styles
+                eng_style_base = f"font-family:Arial, sans-serif; font-weight:bold; color:{color}; line-height:1.1;"
+                tam_style_base = f"font-family:Latha, sans-serif; font-weight:bold; color:{color}; line-height:1.1;"
+
+                # Split words and group 2 per line
+                words = value.split()
+                lines = []
+                for i in range(0, len(words), 2):
+                    lines.append(" ".join(words[i:i+2]))
+
+                # Auto font sizing based on word count
+                if len(words) <= 2:
+                    font_size = "11pt"
+                elif len(words) <= 4:
+                    font_size = "10pt"
                 else:
-                    lines = [value]
+                    font_size = "9pt"
 
-                # Render each line using Tamil/English mixed styling
+                eng_style_box = eng_style_base.replace("line-height:1.1;", f"font-size:{font_size}; line-height:1.1;")
+                tam_style_box = tam_style_base.replace("line-height:1.1;", f"font-size:{font_size}; line-height:1.1;")
+
+                # Render Tamil/English mixed HTML for each line
                 rendered_lines = [render_mixed_html(line.strip(), eng_style_box, tam_style_box) for line in lines]
 
-                # Stack vertically inside same 60×30 pt box
+                # Stack vertically inside the box
                 line_blocks = "".join(
                     [f"<div style='width:100%; text-align:center;'>{ln or '&nbsp;'}</div>" for ln in rendered_lines]
                 )
 
+                # Container
                 html_content += (
                     f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
                     f"width:60pt; height:30pt; display:flex; flex-direction:column; "
                     f"justify-content:center; align-items:center; text-align:center; "
-                    f"font-weight:bold; line-height:1.1; white-space:pre-wrap; word-break:break-word;'>"
+                    f"font-weight:bold; white-space:pre-wrap; word-break:break-word;'>"
                     f"{line_blocks}</div>\n"
                 )
 
 
+        # for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS): working
+        #     for field, (x, y) in dct.items():
+        #         value = form_data.get(field, "")
+        #         if not value:
+        #             continue
+
+        #         left = x
+        #         top = height - y  # top-left origin
+
+        #         # Decide font style (same as before)
+        #         eng_style_box = f"font-family:Arial, sans-serif; font-size:10pt; font-weight:bold; color:{color}; line-height:1.1;"
+        #         tam_style_box = f"font-family:Latha, sans-serif; font-size:15pt; font-weight:bold; color:{color}; line-height:1.1;"
+
+        #         # --- Auto split logic ---
+        #         # If the value is long (or has spaces / Tamil + English mixed), split into 2 lines
+        #         if len(value) > 10 or " " in value:
+        #             # Split roughly in the middle by space or midpoint
+        #             parts = value.split(" ")
+        #             if len(parts) >= 2:
+        #                 lines = [" ".join(parts[:len(parts)//2]), " ".join(parts[len(parts)//2:])]
+        #             else:
+        #                 mid = len(value)//2
+        #                 lines = [value[:mid], value[mid:]]
+        #         else:
+        #             lines = [value]
+
+        #         # Render each line using Tamil/English mixed styling
+        #         rendered_lines = [render_mixed_html(line.strip(), eng_style_box, tam_style_box) for line in lines]
+
+        #         # Stack vertically inside same 60×30 pt box
+        #         line_blocks = "".join(
+        #             [f"<div style='width:100%; text-align:center;'>{ln or '&nbsp;'}</div>" for ln in rendered_lines]
+        #         )
+
+        #         html_content += (
+        #             f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
+        #             # f"width:60pt; height:30pt; display:flex; flex-wrap:wrap; flex-direction:column; gap:2px; "
+        #             f"width:60pt; height:30pt; display:flex; flex-direction:column; "
+        #             f"justify-content:center; align-items:center; text-align:center; "
+        #             f"font-weight:bold; line-height:1.1; white-space:pre-wrap; word-break:break-word;'>"
+        #             f"{line_blocks}</div>\n"
+        #         )
 
 
 
 
 
-        # --- Raasi + Navamsa (fixed & unindented correctly) ---
-        # --- Raasi + Navamsa (auto-size with height fit) ---
-#         for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
-#             for field, (x, y) in dct.items():
-#                 value = form_data.get(field, "")
-#                 if not value:
-#                     continue
 
-#                 left = x
-#                 top = height - y
 
-#                 lines = value.splitlines()
-#                 if not lines:
-#                     lines = [""]
-
-#                 max_width_pt = 60   # box width
-#                 max_height_pt = 60  # total box height
-#                 base_size = 14
-#                 min_size = 8
-
-#                 # Start from base size and shrink until it fits both width and height
-#                 font_size = base_size
-#                 while font_size > min_size:
-#                     # Approximate line height (pt)
-#                     line_height = font_size * 1.2
-#                     total_height = len(lines) * line_height
-
-#                     # crude width check: shrink if too many chars
-#                     too_wide = any(len(line) * (font_size * 0.55) > max_width_pt for line in lines)
-
-#                     if total_height <= max_height_pt and not too_wide:
-#                         break
-#                     font_size -= 1
-
-#                 # Build inline styles with adjusted font size
-#                 eng_style = f"font-family:Arial, sans-serif; font-size:{font_size}pt; font-weight:500; color:{color}; line-height:1.2;"
-#                 tam_style = f"font-family:Latha, sans-serif; font-size:{font_size}pt; font-weight:500; color:{color}; line-height:1.2;"
-
-#                 # Render lines with mixed Tamil/English
-#                 rendered_lines = [render_mixed_html(line, eng_style, tam_style) for line in lines]
-
-#                 # Wrap each rendered line in <div>
-#                 line_blocks = "".join([f"<div style='display:block; width:100%; text-align:center;'>{ln or '&nbsp;'}</div>" for ln in rendered_lines])
-
-#                 # Container with flex centering
-#                 html_content += (
-#     f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
-#     f"width:{max_width_pt}pt; height:{max_height_pt}pt; "
-#     f"display:flex; flex-direction:column; justify-content:center; align-items:center; "
-#     f"text-align:center; overflow:hidden; border:0.5pt dashed rgba(0,0,0,0.3); "
-#     f"transform:translateY(-2pt);'>"
-#     f"{line_blocks}</div>\n"
-# )
 
 
 
