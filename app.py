@@ -764,7 +764,7 @@ RAASI_POSITIONS = {
 NAVAMSA_POSITIONS = {
     "navamsa_1":  (360, 350), "navamsa_2":  (435, 350), "navamsa_3":  (510, 350),
     "navamsa_4":  (590, 350), "navamsa_5":  (590, 275), "navamsa_6":  (590, 200),
-    "navamsa_7":  (590, 140), "navamsa_8":  (435, 140), "navamsa_9":  (510, 140),
+    "navamsa_7":  (590, 140), "navamsa_8":  (510, 140), "navamsa_9":  (435, 140),
     "navamsa_10": (360, 140), "navamsa_11": (360, 200), "navamsa_12": (360, 270),
 }
 
