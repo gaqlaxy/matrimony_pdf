@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Matrimony Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top bar */
+        .topbar {
+            background: #007bff;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar button {
+            background: #ff4d4f;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+
+        .topbar button:hover {
+            background: #d9363e;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2,
+        h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #28a745;
+            color: white;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        button[type="submit"]:hover {
+            background: #218838;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 55px;
+        }
+
+        .grid textarea {
+            height: 35px;
+            min-height: 35px;
+            max-height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="topbar">
+        <div>📄 Matrimony Form</div>
+        <form action="/logout" method="get" style="margin:0;">
+            <button type="submit">Sign Out</button>
+        </form>
+    </div>
+
+    <div class="container">
+
+        <!-- PDF Upload Section -->
+        <h2>📂 Upload Existing PDF</h2>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="pdf">Select PDF:</label>
+                <input type="file" name="pdf" id="pdf" accept="application/pdf" required>
+            </div>
+            <button type="submit">Load PDF</button>
+        </form>
+
+        <hr>
+
+        <!-- Matrimony Form -->
+        <h2>📝 Fill Matrimony Form</h2>
+        <form action="/" method="post" enctype="multipart/form-data" id="matrimonyForm">
+
+            <!-- Basic Info Grid -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="register_number">Register Number</label>
+                    <input type="text" name="register_number" id="register_number"
+                        value="{{ form_data.get('register_number','') }}">
+                </div>
+                <div class="form-group">
+                    <label for="introduced_by">Introduced By</label>
+                    <input type="text" name="introduced_by" id="introduced_by"
+                        value="{{ form_data.get('introduced_by','') }}">
+                </div>
+                <div class="form-group">
+                    <label for="inam">Inam</label>
+                    <input style="font-family:'NotoTamil'; font-weight:bold;" type="text" name="inam" id="inam"
+                        value="{{ form_data.get('inam','') }}">
+                </div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" id="name" value="{{ form_data.get('name','') }}">
+                </div>
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="text" name="dob" id="dob" placeholder="DD/MM/YYYY"
+                        value="{{ form_data.get('dob','') }}">
+                </div>
+                <div class="form-group">
+                    <label for="birth_place">Birth Place</label>
+                    <input type="text" name="birth_place" id="birth_place"
+                        value="{{ form_data.get('birth_place','') }}">
+                </div>
+                <div class="form-group">
+                    <label for="birth_time">Birth Time</label>
+                    <input type="text" name="birth_time" id="birth_time" value="{{ form_data.get('birth_time','') }}">
+                </div>
+                <div class="form-group">
+                    <label for="star">Star</label>
+                    <input type="text" name="star" id="star" value="{{ form_data.get('star','') }}">
+                </div>
+                <div class="form-group">
+                    <label for="raasi_text">Raasi Text</label>
+                    <input type="text" name="raasi_text" id="raasi_text" value="{{ form_data.get('raasi_text','') }}">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label for="work">Work</label>
+                    <textarea name="work" id="work" cols="30" rows="2">{{ form_data.get('work','') }}</textarea>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Family Info Grid -->
+            <div class="form-grid">
+                {% for field in ['height', 'colour', 'laknam', 'education', 'monthly_income', 'birth_order',
+                'elder_brother','elder_sister','younger_brother','younger_sister',
+                'father_name','father_occupation','mother_name','mother_occupation',
+                'expectation','house_address','rentalhouse','lease','ownhouse','addition_info'] %}
+                <div class="form-group">
+                    <label for="{{field}}">{{ field.replace('_', ' ').title() }}</label>
+                    <input type="text" name="{{field}}" id="{{field}}" value="{{ form_data.get(field,'') }}">
+                </div>
+                {% endfor %}
+            </div>
+
+            <hr>
+
+            <!-- Raasi Chart -->
+            <h3>♈ Raasi (Rasi Chart)</h3>
+            <div class="form-grid grid">
+                {% for i in range(1, 13) %}
+                <div class="form-group">
+                    <label for="raasi_{{i}}">Raasi {{i}}</label>
+                    <textarea name="raasi_{{i}}" id="raasi_{{i}}">{{ form_data.get('raasi_' ~ i, '') }}</textarea>
+                </div>
+                {% endfor %}
+            </div>
+
+            <hr>
+
+            <!-- Navamsa Chart -->
+            <h3>♍ Navamsa (Navamsa Chart)</h3>
+            <div class="form-grid grid">
+                {% for i in range(1, 13) %}
+                <div class="form-group">
+                    <label for="navamsa_{{i}}">Navamsa {{i}}</label>
+                    <textarea name="navamsa_{{i}}" id="navamsa_{{i}}">{{ form_data.get('navamsa_' ~ i, '') }}</textarea>
+                </div>
+                {% endfor %}
+            </div>
+
+            <hr>
+
+            <!-- Photo & Gender -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="photo">Upload Photo</label>
+                    <input type="file" name="photo" id="photo" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select name="gender" id="gender">
+                        <option value="">-- Select --</option>
+                        <option value="male" {% if form_data.get('gender')=='male' %}selected{% endif %}>Male</option>
+                        <option value="female" {% if form_data.get('gender')=='female' %}selected{% endif %}>Female
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit">Generate PDF</button>
+
+        </form>
+
+    </div>
+
+    <script>
+        window.addEventListener("load", () => {
+            const form = document.querySelector("form#matrimonyForm");
+            if (form) form.reset();
+        });
+    </script>
+
+</body>
+
+</html>
