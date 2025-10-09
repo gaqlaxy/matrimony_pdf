@@ -741,7 +741,7 @@ FIELD_POSITIONS = {
     "birth_order":       (400, 659),
     "elder_brother":     (110, 617),
     "elder_sister":      (220, 617),
-    "younger_brother":   (320, 617),
+    "younger_brother":   (330, 617),
     "younger_sister":    (430, 617),
     "father_name":       (140, 582),
     "father_occupation": (160, 550),
