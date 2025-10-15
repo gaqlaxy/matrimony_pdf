@@ -389,152 +389,6 @@
 <head>
     <meta charset="utf-8">
     <title>Balaji Matrimony Form</title>
-    <!-- <style>
-        body {
-            font-family: 'Latha', Arial, sans-serif;
-            background: #f5f5f5;
-            margin: 0;
-            padding: 0;
-            color: #003399;
-        }
-
-        .container {
-            max-width: 850px;
-            margin: 30px auto;
-            background: white;
-            border: 1px solid #003399;
-            padding: 20px 25px;
-        }
-
-        h2 {
-            text-align: center;
-            color: #003399;
-            border-bottom: 2px solid #003399;
-            padding-bottom: 6px;
-            margin-bottom: 20px;
-        }
-
-        .form-section {
-            border: 1px solid #003399;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 180px 1fr;
-            gap: 10px 15px;
-            align-items: center;
-        }
-
-        label {
-            font-weight: bold;
-            color: #003399;
-            text-align: right;
-            font-size: 14px;
-        }
-
-        input,
-        textarea,
-        select {
-            border: none;
-            border-bottom: 1px solid #003399;
-            font-family: inherit;
-            font-size: 13px;
-            padding: 4px;
-            color: #000;
-            outline: none;
-            width: 100%;
-            background: transparent;
-        }
-
-        textarea {
-            resize: none;
-        }
-
-        h3 {
-            text-align: center;
-            color: #003399;
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-
-        /* Raasi & Navamsa Chart Grid */
-        .raasi-navamsa-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 50px;
-            margin: 25px 0;
-        }
-
-        .chart {
-            display: grid;
-            grid-template-columns: repeat(4, 80px);
-            grid-template-rows: repeat(3, 80px);
-            border: 2px solid #003399;
-            color: #003399;
-        }
-
-        .chart-box {
-            border: 1px solid #003399;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        .chart-input {
-            width: 100%;
-            height: 100%;
-            border: none;
-            outline: none;
-            resize: none;
-            text-align: center;
-            font-weight: bold;
-            font-family: 'Latha', sans-serif;
-            color: #003399;
-            font-size: 13px;
-            background: transparent;
-        }
-
-        .chart-box::before {
-            content: attr(data-index);
-            position: absolute;
-            top: 4px;
-            left: 6px;
-            font-size: 10px;
-            color: #999;
-            pointer-events: none;
-            opacity: 0.7;
-        }
-
-        button[type="submit"] {
-            display: block;
-            margin: 25px auto 10px;
-            background: #003399;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        button[type="submit"]:hover {
-            background: #002266;
-        }
-
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            margin-top: 10px;
-            color: #666;
-        }
-    </style> -->
-
-
     <style>
         body {
             font-family: 'Latha', Arial, sans-serif;
@@ -622,9 +476,15 @@
         .chart {
             display: grid;
             grid-template-columns: repeat(4, 70px);
-            grid-template-rows: repeat(3, 70px);
+            grid-template-rows: repeat(4, 70px);
+            grid-template-areas:
+                "b1 b2 b3 b4"
+                "b12 .  . b5"
+                "b11 .  . b6"
+                "b10 b9 b8 b7";
+            gap: 2px;
             border: 2px solid #003399;
-            color: #003399;
+            position: relative;
         }
 
         .chart-box {
@@ -656,8 +516,56 @@
             left: 6px;
             font-size: 10px;
             color: #999;
-            pointer-events: none;
             opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .chart [data-index="1"] {
+            grid-area: b1;
+        }
+
+        .chart [data-index="2"] {
+            grid-area: b2;
+        }
+
+        .chart [data-index="3"] {
+            grid-area: b3;
+        }
+
+        .chart [data-index="4"] {
+            grid-area: b4;
+        }
+
+        .chart [data-index="5"] {
+            grid-area: b5;
+        }
+
+        .chart [data-index="6"] {
+            grid-area: b6;
+        }
+
+        .chart [data-index="7"] {
+            grid-area: b7;
+        }
+
+        .chart [data-index="8"] {
+            grid-area: b8;
+        }
+
+        .chart [data-index="9"] {
+            grid-area: b9;
+        }
+
+        .chart [data-index="10"] {
+            grid-area: b10;
+        }
+
+        .chart [data-index="11"] {
+            grid-area: b11;
+        }
+
+        .chart [data-index="12"] {
+            grid-area: b12;
         }
 
         button[type="submit"] {
