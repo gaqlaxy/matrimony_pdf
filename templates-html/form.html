@@ -831,6 +831,34 @@
                 </div>
             </div>
 
+            <div class="form-section">
+    <h3 style="margin-bottom:10px;">⭐ நட்சத்திர தேர்வு</h3>
+
+    <table style="width:100%; border-collapse:collapse; font-size:14px;">
+        <tr style="background:#eef3ff;">
+            <th style="border:1px solid #003399; padding:6px;">நட்சத்திரம்</th>
+            <th style="border:1px solid #003399; padding:6px; text-align:center;">✔ தேர்வு</th>
+        </tr>
+
+        {% set stars = [
+        "Aswini","Barani","Karthigai","Rohini","Mirugashirisham","Thiruvathirai","Punaipoosam","Poosam",
+        "Ayilyam","Magam","Pooram","Uthiram","Astham","Chitirai","Swathi","Visagam","Anusham","Kettai",
+        "Moolam","Pooradam","Thiruvonam","Avittam","Sadhayam","Pooratathi","Uthiratathi","Revathy"
+        ] %}
+
+        {% for star in stars %}
+        <tr>
+            <td style="border:1px solid #003399; padding:6px;">{{ star }}</td>
+            <td style="border:1px solid #003399; text-align:center;">
+                <input type="checkbox" name="star_select" value="{{ star }}"
+                {% if form_data.get('star_select') and star in form_data.get('star_select') %}checked{% endif %}>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+
             <button type="submit">📄 PDF உருவாக்கு</button>
         </form>
 

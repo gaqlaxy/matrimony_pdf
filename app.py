@@ -512,48 +512,7 @@ def logout():
     return redirect(url_for("login_page"))
 
 
-# @app.route("/login")
-# def login_page():
-#     return """
-#     <h2>Login</h2>
-#     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-#     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-#     <script>
-#       const firebaseConfig = {
-#         apiKey: "AIzaSyC6Cekt-KpbH5rq480JxFZ77A580gXskVg",
-#         authDomain: "balajimatri-67547.firebaseapp.com",
-#         projectId: "balajimatri-67547"
-#       };
-#       firebase.initializeApp(firebaseConfig);
 
-#       const auth = firebase.auth();
-
-#       function login() {
-#         const email = document.getElementById("email").value;
-#         const password = document.getElementById("password").value;
-#         auth.signInWithEmailAndPassword(email, password)
-#           .then(userCredential => userCredential.user.getIdToken())
-#           .then(idToken => fetch("/verify_token", {
-#               method: "POST",
-#               headers: {"Content-Type": "application/json"},
-#               body: JSON.stringify({idToken})
-#           }))
-#           .then(res => res.json())
-#           .then(data => {
-#               if (data.status === "success") {
-#                   window.location.href = data.redirect;
-#               } else {
-#                   alert("Login failed: " + data.message);
-#               }
-#           })
-#           .catch(err => alert(err.message));
-#       }
-#     </script>
-#     <input type="email" id="email" placeholder="Email"><br>
-#     <input type="password" id="password" placeholder="Password"><br>
-#     <button onclick="login()">Login</button>
-#     <p>Don't have an account? <a href="/signup">Sign up here</a></p>
-#     """
 @app.route("/login")
 def login_page():
     return """
@@ -616,48 +575,7 @@ def login_page():
 
 
 
-# @app.route("/signup")
-# def signup_page():
-#     return """
-#     <h2>Signup</h2>
-#     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-#     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-#     <script>
-#       const firebaseConfig = {
-#         apiKey: "AIzaSyC6Cekt-KpbH5rq480JxFZ77A580gXskVg",
-#         authDomain: "balajimatri-67547.firebaseapp.com",
-#         projectId: "balajimatri-67547"
-#       };
-#       firebase.initializeApp(firebaseConfig);
 
-#       const auth = firebase.auth();
-
-#       function signup() {
-#         const email = document.getElementById("email").value;
-#         const password = document.getElementById("password").value;
-#         auth.createUserWithEmailAndPassword(email, password)
-#           .then(userCredential => userCredential.user.getIdToken())
-#           .then(idToken => fetch("/verify_token", {
-#               method: "POST",
-#               headers: {"Content-Type": "application/json"},
-#               body: JSON.stringify({idToken})
-#           }))
-#           .then(res => res.json())
-#           .then(data => {
-#               if (data.status === "success") {
-#                   window.location.href = data.redirect;
-#               } else {
-#                   alert("Signup failed: " + data.message);
-#               }
-#           })
-#           .catch(err => alert(err.message));
-#       }
-#     </script>
-#     <input type="email" id="email" placeholder="Email"><br>
-#     <input type="password" id="password" placeholder="Password"><br>
-#     <button onclick="signup()">Sign Up</button>
-#     <p>Already have an account? <a href="/login">Login here</a></p>
-#     """
 @app.route("/signup")
 def signup_page():
     return """
@@ -767,6 +685,34 @@ NAVAMSA_POSITIONS = {
     "navamsa_7":  (590, 140), "navamsa_8":  (510, 140), "navamsa_9":  (435, 140),
     "navamsa_10": (360, 140), "navamsa_11": (360, 200), "navamsa_12": (360, 270),
 }
+STAR_POSITIONS = {
+    "Aswini": (750, 350),
+    "Barani": (730, 330),
+    "Karthigai": (750, 310),
+    "Rohini": (740, 290),
+    "Mirugashirisham": (770, 270),
+    "Thiruvathirai": (100, 680),
+    "Punaipoosam": (100, 660),
+    "Poosam": (100, 640),
+    "Ayilyam": (100, 620),
+    "Magam": (100, 600),
+    "Pooram": (100, 580),
+    "Uthiram": (100, 560),
+    "Astham": (100, 540),
+    "Chitirai": (100, 520),
+    "Swathi": (100, 500),
+    "Visagam": (100, 480),
+    "Anusham": (100, 460),
+    "Kettai": (100, 440),
+    "Moolam": (100, 420),
+    "Pooradam": (100, 400),
+    "Thiruvonam": (100, 380),
+    "Avittam": (100, 360),
+    "Sadhayam": (100, 340),
+    "Pooratathi": (100, 320),
+    "Uthiratathi": (100, 300),
+    "Revathy": (100, 280)
+}
 
 PHOTO_BOX = (469, 410, 920, 1041.5)
 
@@ -825,7 +771,13 @@ def form():
             return render_template("form.html", form_data=form_data)
 
         # Case 2: User submitted form to generate PDF
-        form_data = request.form.to_dict()
+        # form_data = request.form.to_dict()
+        form_data = request.form.to_dict(flat=False)
+
+# Convert single values back to strings (except star list)
+        for k, v in form_data.items():
+            if k != "star_select" and isinstance(v, list) and len(v) == 1:
+                form_data[k] = v[0]
 
         # Handle photo upload
         photo_data = None
@@ -924,61 +876,7 @@ def form():
                     f"<div class='field' style='left:{left}pt; top:{top}pt;'>"
                     f"{safe_html}</div>\n"
                 )
-                # --- Raasi + Navamsa (auto-size with small visual top offset) ---
-# --- Raasi + Navamsa (auto-size + debug borders) ---
-        
-        # --- Raasi + Navamsa (auto-size + Tamil/English + gender color) ---
-        # for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
-        #     for field, (x, y) in dct.items():
-        #         value = form_data.get(field, "")
-        #         if not value:
-        #             continue
-
-        #         left = x
-        #         top = height - y  # top-left origin
-
-        #         # Choose styles with color (same color logic as main fields)
-        #         eng_style_box = f"font-family:Arial, sans-serif; font-size:10pt; font-weight:bold; color:{color}; line-height:1.1;"
-        #         tam_style_box = f"font-family:Latha, sans-serif; font-size:9pt; font-weight:bold; color:{color}; line-height:1.1;"
-
-        #         # Render text with Tamil/English detection
-        #         safe_html = render_mixed_html(value, eng_style_box, tam_style_box)
-
-        #         # Keep your old working flex layout exactly
-        #         html_content += (
-        #             f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
-        #             f"width:60pt; height:30pt; display:flex; align-items:center; justify-content:center; "
-        #             f"text-align:center; font-weight:bold; white-space:pre-wrap; word-break:break-word;'>"
-        #             f"{safe_html}</div>\n"
-        #         )
-        # --- Raasi + Navamsa (Tamil/English + gender color + correct alignment) ---
-        # for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
-        #     for field, (x, y) in dct.items():
-        #         value = form_data.get(field, "")
-        #         if not value:
-        #             continue
-
-        #         left = x
-        #         top = height - y  # top-left origin
-
-        #         # Font sizing logic same as old version
-        #         if value.isascii():
-        #             eng_style_box = f"font-family:Arial, sans-serif; font-size:10pt; font-weight:bold; color:{color}; line-height:1.1;"
-        #             tam_style_box = f"font-family:Latha, sans-serif; font-size:9pt; font-weight:bold; color:{color}; line-height:1.1;"
-        #         else:
-        #             eng_style_box = f"font-family:Arial, sans-serif; font-size:9pt; font-weight:bold; color:{color}; line-height:1.1;"
-        #             tam_style_box = f"font-family:Latha, sans-serif; font-size:8pt; font-weight:bold; color:{color}; line-height:1.1;"
-
-        #         # Render text with Tamil/English detection and color
-        #         safe_html = render_mixed_html(value, eng_style_box, tam_style_box)
-
-        #         # Use your old working flex layout exactly (for alignment)
-        #         html_content += (
-        #             f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
-        #             f"width:60pt; height:30pt; display:flex; align-items:center; justify-content:center; "
-        #             f"text-align:center; flex-wrap:wrap; font-weight:bold; line-height:1.1; white-space:pre-wrap; word-break:break-word;'>"
-        #             f"{safe_html}</div>\n"
-        #         )
+                
         # --- Raasi + Navamsa (Tamil/English + gender color + correct alignment + smart line split) ---
         for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS):
             for field, (x, y) in dct.items():
@@ -1033,51 +931,18 @@ def form():
                 )
 
 
-        # for dct in (RAASI_POSITIONS, NAVAMSA_POSITIONS): working
-        #     for field, (x, y) in dct.items():
-        #         value = form_data.get(field, "")
-        #         if not value:
-        #             continue
+        selected_stars = form_data.get("star_select", [])
 
-        #         left = x
-        #         top = height - y  # top-left origin
+        for star in selected_stars:
+            if star in STAR_POSITIONS:
+                x, y = STAR_POSITIONS[star]
+                tick_left = x
+                tick_top = height - y
 
-        #         # Decide font style (same as before)
-        #         eng_style_box = f"font-family:Arial, sans-serif; font-size:10pt; font-weight:bold; color:{color}; line-height:1.1;"
-        #         tam_style_box = f"font-family:Latha, sans-serif; font-size:15pt; font-weight:bold; color:{color}; line-height:1.1;"
-
-        #         # --- Auto split logic ---
-        #         # If the value is long (or has spaces / Tamil + English mixed), split into 2 lines
-        #         if len(value) > 10 or " " in value:
-        #             # Split roughly in the middle by space or midpoint
-        #             parts = value.split(" ")
-        #             if len(parts) >= 2:
-        #                 lines = [" ".join(parts[:len(parts)//2]), " ".join(parts[len(parts)//2:])]
-        #             else:
-        #                 mid = len(value)//2
-        #                 lines = [value[:mid], value[mid:]]
-        #         else:
-        #             lines = [value]
-
-        #         # Render each line using Tamil/English mixed styling
-        #         rendered_lines = [render_mixed_html(line.strip(), eng_style_box, tam_style_box) for line in lines]
-
-        #         # Stack vertically inside same 60×30 pt box
-        #         line_blocks = "".join(
-        #             [f"<div style='width:100%; text-align:center;'>{ln or '&nbsp;'}</div>" for ln in rendered_lines]
-        #         )
-
-        #         html_content += (
-        #             f"<div style='position:absolute; left:{left}pt; top:{top}pt; "
-        #             # f"width:60pt; height:30pt; display:flex; flex-wrap:wrap; flex-direction:column; gap:2px; "
-        #             f"width:60pt; height:30pt; display:flex; flex-direction:column; "
-        #             f"justify-content:center; align-items:center; text-align:center; "
-        #             f"font-weight:bold; line-height:1.1; white-space:pre-wrap; word-break:break-word;'>"
-        #             f"{line_blocks}</div>\n"
-        #         )
-
-
-
+                html_content += (
+                    f"<div style='position:absolute; left:{tick_left}pt; top:{tick_top}pt; "
+                    f"font-size:18pt; font-weight:bold; color:{color};'>✔</div>"
+                )
 
 
 
@@ -1125,6 +990,54 @@ def form():
         
     
     return render_template("form.html", form_data={})
+
+
+@app.route('/debug_grid')
+def debug_grid():
+    template_path = "templates/matrimony.pdf"
+    template_pdf = PdfReader(open(template_path, "rb"))
+    first_page = template_pdf.pages[0]
+    width, height = float(first_page.mediabox.width), float(first_page.mediabox.height)
+
+    packet = io.BytesIO()
+    can = canvas.Canvas(packet, pagesize=(width, height))
+
+    step = 50
+    can.setStrokeColorRGB(0.8, 0.8, 0.8)
+    can.setFont("Helvetica", 6)
+
+    for x in range(0, int(width)+1, step):
+        can.line(x, 0, x, height)
+        can.drawString(x + 2, height - 10, str(x))
+
+    for y in range(0, int(height)+1, step):
+        can.line(0, y, width, y)
+        can.drawString(2, y + 2, str(y))
+
+    can.save()
+    packet.seek(0)
+
+    overlay_pdf = PdfReader(packet)
+    writer = PdfWriter()
+
+    page0 = template_pdf.pages[0]
+    page0.merge_page(overlay_pdf.pages[0])
+    writer.add_page(page0)
+
+    for p in template_pdf.pages[1:]:
+        writer.add_page(p)
+
+    out_stream = io.BytesIO()
+    writer.write(out_stream)
+    out_stream.seek(0)
+
+    return send_file(out_stream,
+                     as_attachment=True,
+                     download_name="debug_grid.pdf",
+                     mimetype="application/pdf")
+# if __name__ == "__main__":
+#     app.run(debug=True)
+
 
 # -------------------------
 if __name__ == "__main__":
