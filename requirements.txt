@@ -5,4 +5,7 @@ weasyprint
 werkzeug
 reportlab
 firebase-admin
+pdf2image
+Pillow
+
 
