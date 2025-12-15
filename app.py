@@ -472,6 +472,9 @@ from PyPDF2 import PdfReader, PdfWriter
 from weasyprint import HTML
 from werkzeug.utils import secure_filename
 from reportlab.pdfgen import canvas
+from pdf2image import convert_from_bytes
+from PIL import Image
+
 
 import firebase_admin
 from firebase_admin import credentials, auth
@@ -985,12 +988,42 @@ def form():
         final_pdf.seek(0)
         final_pdf = save_pdf_with_metadata(final_pdf, form_data)
 
-        return send_file(final_pdf, as_attachment=True, download_name="matrimony_filled.pdf", mimetype="application/pdf")
-
+        # return send_file(final_pdf, as_attachment=True, download_name="matrimony_filled.pdf", mimetype="application/pdf")
    
         
-    
+        output_format = form_data.get("output_format", "pdf").lower()
+
+        # ---------- PDF ----------
+        if output_format == "pdf":
+            return send_file(
+                final_pdf,
+                as_attachment=True,
+                download_name="matrimony_filled.pdf",
+                mimetype="application/pdf"
+            )
+
+        # ---------- JPG ----------
+        images = convert_from_bytes(
+            final_pdf.getvalue(),
+            dpi=300,
+            fmt="jpeg",
+            poppler_path=r"C:\poppler\Library\bin"
+        )
+
+        img_io = io.BytesIO()
+        images[0].save(img_io, format="JPEG", quality=95)
+        img_io.seek(0)
+
+        return send_file(
+            img_io,
+            as_attachment=True,
+            download_name="matrimony_filled.jpg",
+            mimetype="image/jpeg"
+        )
+
+    # GET request
     return render_template("form.html", form_data={})
+    # return render_template("form.html", form_data={})
 
 
 @app.route('/debug_grid')
